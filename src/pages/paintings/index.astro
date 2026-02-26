@@ -5,10 +5,10 @@ import Base from "../../layouts/Base.astro";
 import { PortableText } from "astro-portabletext";
 import { Image } from "astro:assets";
 
-const POSTS_QUERY = `*[
+const QUERY = `*[
   _type == "painting"
   && defined(slug.current)
-]|order(publishedAt desc)[0...12]{_id, title, slug, year, width, height, medium, body, available, image{
+]|order(year desc){_id, title, slug, year, width, height, medium, body, available, image{
     asset->{
       _id,
       url,
@@ -18,14 +18,34 @@ const POSTS_QUERY = `*[
     },
     crop,
     hotspot
-  }, publishedAt}`;
+  }}`;
 
-const paintings = await sanityClient.fetch<SanityDocument[]>(POSTS_QUERY);
+const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
+
+let scales: Record<string, number> = {};
+
+const sortedPaintingsBySize: SanityDocument[] = paintings.toSorted((a, b) => {
+    return (
+        Number(b.width) * Number(b.height) - Number(a.width) * Number(a.height)
+    );
+});
+
+sortedPaintingsBySize.forEach((p) => {
+    scales[p._id] = Math.pow(
+        (Number(p.width) * Number(p.height)) /
+            (sortedPaintingsBySize[0].width * sortedPaintingsBySize[0].height),
+        1 / 3,
+    );
+});
 ---
 
 <Base>
     <main class={"container"}>
         <h1>Paintings</h1>
+        <p class={"note"}>
+            Paintings are displayed at sizes proportional to their actual
+            dimensions.
+        </p>
         <div class={"paintings"}>
             {
                 paintings.map((painting, idx) => (
@@ -44,6 +64,7 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(POSTS_QUERY);
                                 painting.image.asset.metadata.dimensions.height
                             }
                             class={"image"}
+                            style={`transform: scale(${scales[painting._id]})`}
                         />
 
                         <div class={"info"}>
@@ -80,6 +101,11 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(POSTS_QUERY);
 <style>
     .container {
         padding: 0 7.5rem;
+    }
+
+    .note {
+        font-weight: 500;
+        margin-top: 1rem;
     }
 
     .paintings {
@@ -121,14 +147,11 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(POSTS_QUERY);
     }
 
     .painting .image {
-        /* width: auto;
-    max-width: 100%;
-    min-height: 80vh;
-    height: auto; */
         justify-self: flex-end;
-        max-width: 100%;
-
-        height: auto;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        overflow: hidden;
     }
 
     .painting .info {

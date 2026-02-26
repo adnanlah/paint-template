@@ -1,14 +1,42 @@
 ---
 import { Image } from "astro:assets";
-import img1 from "../assets/gallery/photo_2026-02-07 22.30.02.jpeg";
-import img2 from "../assets/gallery/photo_2026-02-07 22.29.52.jpeg";
+import { sanityClient } from "sanity:client";
+import type { SanityDocument } from "@sanity/client";
+
+const QUERY = `*[
+  _type == "collage"
+  && highlighted == true
+]|order(year desc)[0..1]{_id, title, slug, highlighted, image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    },
+    crop,
+    hotspot
+  }}`;
+
+const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
 <div class={"container"}>
-  <div class={"title"}>DIGITAL COLLAGE</div>
-  <div class={"row"}>
-    <Image src={img1} alt="Image 1" class={"painting"} />
-    <Image src={img2} alt="Image 2" class={"painting"} />
+  <a href="/collages" class:list={["styledLink", "title"]}>DIGITAL COLLAGE</a>
+  <div class="collages-container">
+    <a href="/collages" class:list={["row", "clickableImage", "left"]}>
+      {
+        collages.map((collage) => (
+          <Image
+            src={collage.image.asset.url}
+            alt={collage.title}
+            width={collage.image.asset.metadata.dimensions.width}
+            height={collage.image.asset.metadata.dimensions.height}
+            class={"collage"}
+          />
+        ))
+      }
+    </a>
   </div>
 </div>
 
@@ -20,23 +48,26 @@ import img2 from "../assets/gallery/photo_2026-02-07 22.29.52.jpeg";
   .title {
     font-size: 2rem;
     font-weight: bold;
-    padding: 0 7rem;
+    margin-left: 7rem;
+  }
+
+  .collages-container {
+    display: flex;
+    justify-content: flex-end;
   }
 
   .row {
     margin-top: 5rem;
-    display: flex;
+    display: inline-flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    gap: 2rem;
-    min-width: 100%;
+    gap: 2.5rem;
     overflow: visible;
   }
 
-  .painting {
+  .collage {
     display: block;
-    border-radius: 4px;
     width: auto;
     height: auto;
     max-height: 35rem;

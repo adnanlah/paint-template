@@ -1,12 +1,46 @@
 ---
 import { Image } from "astro:assets";
-import img1 from "../assets/gallery/photo_2026-02-07 22.30.02.jpeg";
+import { sanityClient } from "sanity:client";
+import type { SanityDocument } from "@sanity/client";
+
+const QUERY = `*[
+  _type == "photography"
+  && highlighted == true
+]|order(year desc)[0]{_id, title, slug, highlighted, image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    },
+    crop,
+    hotspot
+  }}`;
+
+const photography = await sanityClient.fetch<SanityDocument>(QUERY);
 ---
 
 <div class={"container"}>
-    <div class={"title"}>PHOTOGRAPHY</div>
-    <div class={"row"}>
-        <Image src={img1} alt="Image 1" class={"painting"} />
+    <a href="/photography" class:list={["styledLink", "title"]}>PHOTOGRAPHY</a>
+    <div>
+        <a href="/photography" class:list={["row", "clickableImage", "right"]}>
+            {
+                (
+                    <Image
+                        src={photography.image.asset.url}
+                        alt={photography.title}
+                        width={
+                            photography.image.asset.metadata.dimensions.width
+                        }
+                        height={
+                            photography.image.asset.metadata.dimensions.height
+                        }
+                        class={"photography"}
+                    />
+                )
+            }
+        </a>
     </div>
 </div>
 
@@ -18,25 +52,23 @@ import img1 from "../assets/gallery/photo_2026-02-07 22.30.02.jpeg";
     .title {
         font-size: 2rem;
         font-weight: bold;
-        padding: 0 7rem;
+        margin-left: 7rem;
     }
 
     .row {
         margin-top: 5rem;
-        display: flex;
+        display: inline-flex;
         flex-direction: row;
         justify-content: flex-start;
         align-items: center;
-        gap: 2rem;
-        min-width: 100%;
+        gap: 2.5rem;
         overflow: visible;
     }
 
-    .painting {
+    .photography {
         display: block;
-        border-radius: 4px;
         width: auto;
         height: auto;
-        max-height: 50rem;
+        max-height: 45rem;
     }
 </style>

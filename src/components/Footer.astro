@@ -1,50 +1,66 @@
 <div class={"container"}>
-    <div>
-        <div class={"text"}>
-            <p>
-                Digital presence worthy of your art by <a
-                    href="mailto:lahadn@gmail.com"
-                    class={"styledLink"}>A.L</a
-                >
-            </p>
+    <div class={"nav"}>
+        <div>
+            <div class={"creator"}>
+                <p>
+                    Digital presence worthy of your art by <a
+                        href="mailto:lahadn@gmail.com"
+                        class={"styledLink"}>A.L</a
+                    >
+                </p>
+            </div>
         </div>
-    </div>
-    <a href="/" class={"logoContainer"} aria-label="Home"></a>
-    <div>
-        <div class={"text"}>
-            <p>Djelfa, 17000 - Algeria</p>
+        <a href="/" class={"logoContainer"} aria-label="Home"></a>
+
+        <div class={"location"}>
+            <a href="mailto:contact@elbahibelkheiri.com"
+                >contact@elbahibelkheiri.com</a
+            >
+            <p style={{ marginTop: ".25rem" }}>Djelfa, 17000 - Algeria</p>
         </div>
     </div>
 </div>
 
 <style>
     .container {
-        /* background: linear-gradient(180deg, #fffef5, rgb(20, 0, 0) 70%); */
-        background: rgb(20, 0, 0);
-        /* background: linear-gradient(180deg, #DAFA00, #A82B2C 50%); */
-        color: whitesmoke;
-
+        height: 20rem;
+        /* background: rgb(20, 0, 0); */
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5rem 7.5rem 2.5rem 7.5rem;
+        flex-direction: column;
+        justify-content: end;
         margin-top: 14rem;
     }
 
-    .container a {
-        color: whitesmoke;
+    .nav {
+        /* background: linear-gradient(180deg, #fffef5, rgb(20, 0, 0) 70%); */
+        /* background: linear-gradient(180deg, #DAFA00, #A82B2C 50%); */
+        /* color: #f8e4e1; */
+        color: #200400;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+
+        align-items: center;
+        padding: 5rem 7.5rem 2.5rem 7.5rem;
+    }
+
+    .nav a {
+        color: inherit;
+    }
+
+    .creator {
+        justify-self: start;
+    }
+
+    .location {
+        justify-self: end;
     }
 
     a.logoContainer {
         display: block;
         width: 7.25rem;
         aspect-ratio: 797 / 368;
-        background-image: url("/logo.svg");
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position: center;
-        /* filter invert */
-        filter: invert(1);
+        background-color: #200400;
+        -webkit-mask: url("/logo.svg") no-repeat center / contain;
+        mask: url("/logo.svg") no-repeat center / contain;
     }
 </style>

@@ -1,17 +1,41 @@
 ---
 import { Image } from "astro:assets";
-import img1 from "../assets/gallery/photo_2026-02-07 22.30.02.jpeg";
-import img2 from "../assets/gallery/photo_2026-02-07 22.29.52.jpeg";
-import img3 from "../assets/gallery/photo_2026-02-07 22.30.00.jpeg";
+import { sanityClient } from "sanity:client";
+import type { SanityDocument } from "@sanity/client";
+
+const QUERY = `*[
+  _type == "painting"
+  && highlighted == true
+]|order(year desc)[0..2]{_id, title, slug, width, height, highlighted, image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    },
+    crop,
+    hotspot
+  }}`;
+
+const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
 <div class={"container"}>
   <a href="/paintings" class:list={["styledLink", "title"]}>PAINTINGS</a>
   <div>
-    <a href="/paintings" class={"row"}>
-      <Image src={img1} alt="Image 1" class={"painting"} />
-      <Image src={img2} alt="Image 2" class={"painting"} />
-      <Image src={img3} alt="Image 3" class={"painting"} />
+    <a href="/paintings" class:list={["row", "clickableImage", "right"]}>
+      {
+        paintings.map((painting) => (
+          <Image
+            src={painting.image.asset.url}
+            alt={painting.title}
+            width={painting.image.asset.metadata.dimensions.width}
+            height={painting.image.asset.metadata.dimensions.height}
+            class={"painting"}
+          />
+        ))
+      }
     </a>
   </div>
 </div>
@@ -33,13 +57,12 @@ import img3 from "../assets/gallery/photo_2026-02-07 22.30.00.jpeg";
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    gap: 2rem;
+    gap: 2.5rem;
     overflow: visible;
   }
 
   .painting {
     display: block;
-    border-radius: 4px;
     width: auto;
     height: auto;
     max-height: 25rem;

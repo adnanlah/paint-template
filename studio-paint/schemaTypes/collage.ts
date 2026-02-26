@@ -16,16 +16,6 @@ export const collageType = defineType({
             validation: (rule) => rule.required(),
         }),
         defineField({
-            name: 'width',
-            type: 'number',
-            validation: (rule) => rule.required(),
-        }),
-        defineField({
-            name: 'height',
-            type: 'number',
-            validation: (rule) => rule.required(),
-        }),
-        defineField({
             name: 'highlighted',
             type: 'boolean',
             initialValue: false,
