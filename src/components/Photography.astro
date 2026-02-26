@@ -1,0 +1,42 @@
+---
+import { Image } from "astro:assets";
+import img1 from "../assets/gallery/photo_2026-02-07 22.30.02.jpeg";
+---
+
+<div class={"container"}>
+    <div class={"title"}>PHOTOGRAPHY</div>
+    <div class={"row"}>
+        <Image src={img1} alt="Image 1" class={"painting"} />
+    </div>
+</div>
+
+<style>
+    .container {
+        margin-top: 7rem;
+    }
+
+    .title {
+        font-size: 2rem;
+        font-weight: bold;
+        padding: 0 7rem;
+    }
+
+    .row {
+        margin-top: 5rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 2rem;
+        min-width: 100%;
+        overflow: visible;
+    }
+
+    .painting {
+        display: block;
+        border-radius: 4px;
+        width: auto;
+        height: auto;
+        max-height: 50rem;
+    }
+</style>

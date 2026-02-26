@@ -1,0 +1,145 @@
+---
+import type { SanityDocument } from "@sanity/client";
+import { sanityClient } from "sanity:client";
+import Base from "../../layouts/Base.astro";
+import { PortableText } from "astro-portabletext";
+import { Image } from "astro:assets";
+
+const POSTS_QUERY = `*[
+  _type == "painting"
+  && defined(slug.current)
+]|order(publishedAt desc)[0...12]{_id, title, slug, year, width, height, medium, body, available, image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    },
+    crop,
+    hotspot
+  }, publishedAt}`;
+
+const paintings = await sanityClient.fetch<SanityDocument[]>(POSTS_QUERY);
+---
+
+<Base>
+    <main class={"container"}>
+        <h1>Paintings</h1>
+        <div class={"paintings"}>
+            {
+                paintings.map((painting, idx) => (
+                    <div
+                        class={`${"painting"} ${
+                            idx % 2 !== 0 ? "paintingReversed" : ""
+                        }`}
+                    >
+                        <Image
+                            src={painting.image.asset.url}
+                            alt={painting.title}
+                            width={
+                                painting.image.asset.metadata.dimensions.width
+                            }
+                            height={
+                                painting.image.asset.metadata.dimensions.height
+                            }
+                            class={"image"}
+                        />
+
+                        <div class={"info"}>
+                            <div>
+                                <a
+                                    href={`/paintings/${painting.slug.current}`}
+                                    class={"styledLink"}
+                                >
+                                    <h2>{painting.title}</h2>
+                                </a>
+                            </div>
+                            <div class={"details"}>
+                                {/* <p>Year: {painting.year}</p>
+                                <p>Medium: {painting.medium}</p>
+                                <p>Width: {painting.width}mm</p>
+                                <p>Height: {painting.height}mm</p>
+                                {painting.available && <p>available</p>}
+                                {!painting.available && <p>Available</p>} */}
+
+                                <div class={"description"}>
+                                    {Array.isArray(painting.body) && (
+                                        <PortableText value={painting.body} />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </main>
+</Base>
+
+<style>
+    .container {
+        padding: 0 7.5rem;
+    }
+
+    .paintings {
+        display: flex;
+        flex-direction: column;
+        margin-top: 3.5rem;
+    }
+
+    .painting {
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        align-items: center;
+    }
+
+    .painting h2 {
+        display: inline-block;
+    }
+
+    .paintingReversed > :first-child {
+        order: 1;
+    }
+
+    .paintingReversed > :last-child {
+        order: -1;
+    }
+
+    .paintingReversed .info {
+        justify-self: flex-start;
+    }
+
+    .paintingReversed .info {
+        justify-self: flex-end;
+    }
+
+    .paintingReversed .description {
+        text-align: right;
+    }
+
+    .painting .image {
+        /* width: auto;
+    max-width: 100%;
+    min-height: 80vh;
+    height: auto; */
+        justify-self: flex-end;
+        max-width: 100%;
+
+        height: auto;
+    }
+
+    .painting .info {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .painting .details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+</style>

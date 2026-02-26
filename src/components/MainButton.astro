@@ -1,0 +1,25 @@
+---
+const { id, dataSlug } = Astro.props;
+---
+
+<button class="button" id={id} data-slug={dataSlug} aria-label="Inquire"
+    >Inquire</button
+>
+
+<style>
+    .button {
+        background-color: #dafa00;
+        color: #000;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .button:hover {
+        background-color: #cae900;
+    }
+</style>

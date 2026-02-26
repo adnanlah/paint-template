@@ -1,0 +1,140 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<div class={"container"}>
+    <div class={"nav"}>
+        <a href="/" class:list={["styledLink", { active: currentPath === "/" }]}
+            >Home</a
+        >
+        <!-- <a href="/paintings" class={"styledLink"}>Paintings</a>
+        <a href="/collage" class={"styledLink"}>Collage</a>
+        <a href="/photography" class={"styledLink"}>Photography</a> -->
+        <a
+            href="/paintings"
+            class:list={[
+                "styledLink",
+                { active: currentPath === "/paintings" },
+            ]}>Paintings</a
+        >
+        <a
+            href="/bio"
+            class:list={["styledLink", { active: currentPath === "/bio" }]}
+            >Biography</a
+        >
+        <a
+            href="/contact"
+            class:list={["styledLink", { active: currentPath === "/contact" }]}
+            >Contact</a
+        >
+    </div>
+    <a href="/" class={"logoContainer"} aria-label="Home"></a>
+    <div class={"socials"}>
+        <a
+            href="https://www.instagram.com/elbahi.yaahya/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><rect width="20" height="20" x="2" y="2" rx="5" ry="5"
+                ></rect><path
+                    d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+                ></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"
+                ></line></svg
+            >
+        </a>
+        <a
+            href="https://www.facebook.com/el.bahi.583576"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                ></path></svg
+            >
+        </a>
+    </div>
+</div>
+
+<style>
+    .container {
+        font-size: 1.25rem;
+        padding: 5rem 7.5rem 2.5rem 7.5rem;
+        font-weight: 500;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+    }
+
+    a.logoContainer {
+        display: block;
+        width: 7.25rem;
+        aspect-ratio: 797 / 368;
+        background-image: url("/logo.svg");
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+    }
+
+    a.logoContainer::after {
+        display: none;
+    }
+
+    .nav {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        justify-self: start;
+    }
+
+    .socials {
+        display: flex;
+        gap: 1.5rem;
+        justify-self: end;
+    }
+
+    .socials a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.5rem;
+        background-color: transparent;
+        color: currentColor;
+        transition:
+            background-color 0.3s ease,
+            color 0.3s ease,
+            transform 0.3s ease;
+    }
+
+    .socials a::after {
+        display: none;
+    }
+
+    .socials a:hover {
+        background-color: #000;
+        color: #fff;
+    }
+</style>

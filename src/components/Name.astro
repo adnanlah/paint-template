@@ -1,0 +1,53 @@
+---
+import { Image } from "astro:assets";
+import avatar from "../assets/avatar.png";
+const email = "contact@elbahibelkheiri.com";
+---
+
+<div class={"container"}>
+    <div class={"name"}>
+        <div class={"image"}>
+            <Image src={avatar} alt="avatar" inferSize />
+        </div>
+        <div>
+            <div>El Bahi<br />BELKHEIRI</div>
+        </div>
+    </div>
+    <div class={"role"}>
+        <div>
+            Hello! My name is El Bahi and I am a visual artist who does
+            caligraphy, and photography. I am passionate about art and I love to
+            create beautiful pieces that bring joy to people's lives.
+        </div>
+        <div style={{ marginTop: ".5rem" }}>
+            Drop me a line at <a href={`mailto:${email}`}><b>{email}</b></a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+    }
+
+    .name {
+        font-size: 2.5rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+    }
+
+    .image > img {
+        height: 10rem;
+        width: 10rem;
+    }
+
+    .role {
+        width: 75%;
+        line-height: 1.5;
+    }
+</style>

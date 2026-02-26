@@ -1,0 +1,232 @@
+---
+import type { SanityDocument } from "@sanity/client";
+import { sanityClient } from "sanity:client";
+import Item from "../../layouts/Item.astro";
+import { PortableText } from "astro-portabletext";
+import { Image } from "astro:assets";
+import MainButton from "../../components/MainButton.astro";
+import InquireModal from "../../components/InquireModal.astro";
+
+export async function getStaticPaths() {
+  const slugs = await sanityClient.fetch(`
+    *[_type == "painting" && defined(slug.current)]{
+      "slug": slug.current
+    }
+  `);
+
+  return slugs.map((s: { slug: any }) => ({
+    params: { slug: s.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+
+console.log(slug);
+
+if (!slug) {
+  throw new Error("Missing slug param");
+}
+
+const QUERY = `*[
+  _type == "painting" &&
+  slug.current == $slug
+][0]{
+  _id,
+  title,
+  slug,
+  year,
+  width,
+  height,
+  medium,
+  body,
+  available,
+  image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    },
+    crop,
+    hotspot
+  },
+  publishedAt
+}`;
+
+const painting = await sanityClient.fetch<SanityDocument>(QUERY, {
+  slug,
+});
+
+if (!painting) {
+  return Astro.redirect("/404");
+}
+---
+
+<Item>
+  <main>
+    <InquireModal id="my-modal" slug={slug} />
+    <h1 class="title">
+      <a href="/paintings" class="styledLink">Paintings</a>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2.5"
+        stroke="currentColor"
+        class="size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5"></path>
+      </svg>
+
+      <div>
+        {painting.title}
+      </div>
+    </h1>
+    <div class="image">
+      <Image
+        src={painting.image.asset.url}
+        alt={painting.title}
+        width={painting.image.asset.metadata.dimensions.width}
+        height={painting.image.asset.metadata.dimensions.height}
+      />
+    </div>
+
+    <div class={"details"}>
+      <h2>{painting.title}</h2>
+      <p>
+        {painting.year} • {painting.width}mm x {painting.height}mm • {
+          painting.medium
+        }
+      </p>
+      <div class="body">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique esse
+        quos dignissimos ratione sapiente nobis repellendus non quidem quasi cum
+        vitae maxime laborum error et sed porro doloribus sequi iusto, vel illum
+        iure odio tenetur debitis. Omnis molestias necessitatibus iusto. Autem
+        non harum dolore! Sunt labore dolorum quam natus officia!
+        <PortableText value={painting.body} />
+      </div>
+
+      {
+        painting.available && (
+          <div class="not-available">
+            <div>Not available</div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
+              />
+            </svg>
+          </div>
+        )
+      }
+      {
+        !painting.available && (
+          <MainButton id="open-modal" data-slug={slug}>
+            Inquire
+          </MainButton>
+        )
+      }
+    </div>
+  </main>
+</Item>
+
+<style>
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .title svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .image {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+
+  .container {
+    padding: 0 7.5rem;
+  }
+
+  .painting .details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .details {
+    margin: 2.5rem auto 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+    width: 33%;
+  }
+
+  .details > .body {
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  .not-available {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  .not-available svg {
+    width: 2rem;
+    height: 2rem;
+  }
+</style>
+
+<script>
+  const modal = document.getElementById("my-modal") as HTMLDialogElement;
+  const openBtn = document.getElementById("open-modal") as HTMLButtonElement;
+  const closeBtn = document.getElementById("close-modal") as HTMLButtonElement;
+
+  openBtn.addEventListener("click", () => {
+    modal.showModal();
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.close();
+  });
+
+  modal.addEventListener("click", (e) => {
+    const rect = modal.getBoundingClientRect();
+    const clickedOutside =
+      e.clientX < rect.left ||
+      e.clientX > rect.right ||
+      e.clientY < rect.top ||
+      e.clientY > rect.bottom;
+
+    if (clickedOutside) modal.close();
+  });
+
+  // Escape key is handled natively by <dialog> — no extra code needed!
+</script>

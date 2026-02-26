@@ -1,0 +1,68 @@
+---
+import { Image } from "astro:assets";
+import avatar from "../assets/about.png";
+---
+
+<div class={"about"}>
+	<div>
+		<div class={"image"}>
+			<Image src={avatar} alt="avatar" inferSize />
+		</div>
+	</div>
+	<div>
+		<div class={"info"}>
+			<div class={"name"}>El Bahi<br />BELKHEIRI</div>
+		</div>
+		<div class={"role"}>
+			<div>
+				I am a visual artist based in Algeria, specializing in oil
+				painting. My work explores the intersection of traditional
+				techniques and contemporary expression, capturing the essence of
+				human emotion and the beauty of the natural world.
+			</div>
+			<div style={{ marginTop: ".5rem" }}>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
+				mollis volutpat purus, sed cursus tellus malesuada at. Donec
+				laoreet pellentesque velit. Proin accumsan mollis mauris, eget
+				posuere orci venenatis ac. Nam congue quam in tortor egestas
+				elementum. Suspendisse dui velit, faucibus ac tortor nec, dictum
+				dictum dui. Donec gravida vel.
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.about {
+		margin-top: 7rem;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		align-items: center;
+		justify-content: center;
+		gap: 2.5rem;
+	}
+
+	.role {
+		width: 50%;
+		line-height: 1.5;
+		margin-top: 1rem;
+	}
+
+	.image {
+		justify-self: end;
+	}
+
+	.image > img {
+		width: 20rem;
+		height: auto;
+	}
+
+	.name {
+		font-size: 2.5rem;
+		font-weight: bold;
+	}
+
+	.role {
+		font-size: 1rem;
+	}
+</style>
