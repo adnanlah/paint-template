@@ -1,0 +1,144 @@
+---
+import type { SanityDocument } from "@sanity/client";
+import { sanityClient } from "sanity:client";
+import Base from "../../layouts/Base.astro";
+import { PortableText } from "astro-portabletext";
+import { Image } from "astro:assets";
+
+const QUERY = `*[
+  _type == "collage"
+  && defined(slug.current)
+]|order(year desc){_id, title, slug, year, body, image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    },
+    crop,
+    hotspot
+  }}`;
+
+const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
+---
+
+<Base>
+    <div>
+        <h1>Digital Collages</h1>
+        <div class={"photos"}>
+            {
+                collages.map((photo, idx) => (
+                    <div
+                        class={`${"photo"} ${
+                            idx % 2 !== 0 ? "photoReversed" : ""
+                        }`}
+                    >
+                        <a
+                            href={`/digital-collages/${photo.slug.current}`}
+                            class:list={[
+                                "clickableImage",
+                                { right: idx % 2 !== 0, left: idx % 2 === 0 },
+                            ]}
+                        >
+                            <Image
+                                src={photo.image.asset.url}
+                                alt={photo.title}
+                                width={
+                                    photo.image.asset.metadata.dimensions.width
+                                }
+                                height={
+                                    photo.image.asset.metadata.dimensions.height
+                                }
+                                class={"image"}
+                            />
+                        </a>
+
+                        <div class={"info"}>
+                            <div>
+                                <a
+                                    href={`/digital-collages/${photo.slug.current}`}
+                                    class={"styledLink"}
+                                >
+                                    <h2>{photo.title}</h2>
+                                </a>
+                            </div>
+                            <div class={"details"}>
+                                <div class={"description"}>
+                                    {Array.isArray(photo.body) && (
+                                        <PortableText value={photo.body} />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</Base>
+
+<style>
+    .note {
+        font-weight: 500;
+        margin-top: 1rem;
+    }
+
+    .photos {
+        display: flex;
+        flex-direction: column;
+        margin-top: 3.5rem;
+    }
+
+    .photo {
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        align-items: center;
+    }
+
+    .photo h2 {
+        display: inline-block;
+    }
+
+    .photoReversed > :first-child {
+        order: 1;
+    }
+
+    .photoReversed > :last-child {
+        order: -1;
+    }
+
+    .photoReversed .info {
+        justify-self: flex-start;
+    }
+
+    .photoReversed .info {
+        justify-self: flex-end;
+    }
+
+    .photoReversed .description {
+        text-align: right;
+    }
+
+    .photo .image {
+        justify-self: flex-end;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        overflow: hidden;
+    }
+
+    .photo .info {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .photo .details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+</style>

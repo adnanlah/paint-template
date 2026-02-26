@@ -40,7 +40,7 @@ sortedPaintingsBySize.forEach((p) => {
 ---
 
 <Base>
-    <main class={"container"}>
+    <div>
         <h1>Paintings</h1>
         <p class={"note"}>
             Paintings are displayed at sizes proportional to their actual
@@ -54,18 +54,28 @@ sortedPaintingsBySize.forEach((p) => {
                             idx % 2 !== 0 ? "paintingReversed" : ""
                         }`}
                     >
-                        <Image
-                            src={painting.image.asset.url}
-                            alt={painting.title}
-                            width={
-                                painting.image.asset.metadata.dimensions.width
-                            }
-                            height={
-                                painting.image.asset.metadata.dimensions.height
-                            }
-                            class={"image"}
-                            style={`transform: scale(${scales[painting._id]})`}
-                        />
+                        <a
+                            href={`/paintings/${painting.slug.current}`}
+                            class:list={[
+                                "clickableImage",
+                                { right: idx % 2 !== 0, left: idx % 2 === 0 },
+                            ]}
+                        >
+                            <Image
+                                src={painting.image.asset.url}
+                                alt={painting.title}
+                                width={
+                                    painting.image.asset.metadata.dimensions
+                                        .width
+                                }
+                                height={
+                                    painting.image.asset.metadata.dimensions
+                                        .height
+                                }
+                                class={"image"}
+                                style={`transform: scale(${scales[painting._id]})`}
+                            />
+                        </a>
 
                         <div class={"info"}>
                             <div>
@@ -77,13 +87,6 @@ sortedPaintingsBySize.forEach((p) => {
                                 </a>
                             </div>
                             <div class={"details"}>
-                                {/* <p>Year: {painting.year}</p>
-                                <p>Medium: {painting.medium}</p>
-                                <p>Width: {painting.width}mm</p>
-                                <p>Height: {painting.height}mm</p>
-                                {painting.available && <p>available</p>}
-                                {!painting.available && <p>Available</p>} */}
-
                                 <div class={"description"}>
                                     {Array.isArray(painting.body) && (
                                         <PortableText value={painting.body} />
@@ -95,14 +98,10 @@ sortedPaintingsBySize.forEach((p) => {
                 ))
             }
         </div>
-    </main>
+    </div>
 </Base>
 
 <style>
-    .container {
-        padding: 0 7.5rem;
-    }
-
     .note {
         font-weight: 500;
         margin-top: 1rem;

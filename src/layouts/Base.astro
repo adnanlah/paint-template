@@ -6,6 +6,16 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout>
 	<Header />
-	<slot />
+	<main>
+		<slot />
+	</main>
 	<Footer />
 </Layout>
+
+<style>
+	main {
+		max-width: 2400px;
+		margin: 0 auto;
+		padding: 0 7.5rem;
+	}
+</style>

@@ -1,5 +1,23 @@
 ---
 const currentPath = Astro.url.pathname;
+import type { SanityDocument } from "@sanity/client";
+import { sanityClient } from "sanity:client";
+
+const QUERY = `*[
+  _type == "bio"
+]|{_id, email, address, instagram, facebook, body, image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    },
+    crop,
+    hotspot
+  }}`;
+
+const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
 <div class={"container"}>
@@ -14,24 +32,38 @@ const currentPath = Astro.url.pathname;
             href="/paintings"
             class:list={[
                 "styledLink",
-                { active: currentPath === "/paintings" },
+                { active: currentPath.startsWith("/paintings") },
             ]}>Paintings</a
+        >
+        <a
+            href="/digital-collages"
+            class:list={[
+                "styledLink",
+                { active: currentPath.startsWith("/digital-collages") },
+            ]}>Digital Collages</a
+        >
+        <a
+            href="/photography"
+            class:list={[
+                "styledLink",
+                { active: currentPath.startsWith("/photography") },
+            ]}>Photography</a
         >
         <a
             href="/bio"
             class:list={["styledLink", { active: currentPath === "/bio" }]}
-            >Biography</a
+            >Bio</a
         >
-        <a
+        <!-- <a
             href="/contact-me"
             class:list={["styledLink", { active: currentPath === "/contact" }]}
             >Contact</a
-        >
+        > -->
     </div>
     <a href="/" class={"logoContainer"} aria-label="Home"></a>
     <div class={"socials"}>
         <a
-            href="https://www.instagram.com/elbahi.yaahya/"
+            href={bio[0].instagram}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
@@ -54,7 +86,7 @@ const currentPath = Astro.url.pathname;
             >
         </a>
         <a
-            href="https://www.facebook.com/el.bahi.583576"
+            href={bio[0].facebook}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"

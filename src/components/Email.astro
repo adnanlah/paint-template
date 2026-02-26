@@ -1,9 +1,32 @@
+---
+import type { SanityDocument } from "@sanity/client";
+import { sanityClient } from "sanity:client";
+
+const QUERY = `*[
+  _type == "bio"
+]|{_id, email, address, instagram, facebook, body, image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    },
+    crop,
+    hotspot
+  }}`;
+
+const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
+---
+
 <div class={"container"}>
     <div class={"portfolio"}>PORTFOLIO</div>
     <div class={"name"}>El Bahi BELKHEIRI</div>
     <div class={"email"}>
-        <a href="mailto:contact@elbahibelkheiri.com" class={"styledLink"}
-            >contact<span class={"emailSpan"}>@elbahibelkheiri.com</span></a
+        <a href={"mailto:" + bio[0].email} class={"styledLink"}
+            >{bio[0].email.split("@")[0]}<span class={"emailSpan"}
+                >@{bio[0].email.split("@")[1]}</span
+            ></a
         >
     </div>
 </div>

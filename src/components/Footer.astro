@@ -1,3 +1,24 @@
+---
+import type { SanityDocument } from "@sanity/client";
+import { sanityClient } from "sanity:client";
+
+const QUERY = `*[
+  _type == "bio"
+]|{_id, email, address, instagram, facebook, body, image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    },
+    crop,
+    hotspot
+  }}`;
+
+const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
+---
+
 <div class={"container"}>
     <div class={"nav"}>
         <div>
@@ -13,10 +34,8 @@
         <a href="/" class={"logoContainer"} aria-label="Home"></a>
 
         <div class={"location"}>
-            <a href="mailto:contact@elbahibelkheiri.com"
-                >contact@elbahibelkheiri.com</a
-            >
-            <p style={{ marginTop: ".25rem" }}>Djelfa, 17000 - Algeria</p>
+            <a href={"mailto:" + bio[0].email}>{bio[0].email}</a>
+            <p style={{ marginTop: ".25rem" }}>{bio[0].address}</p>
         </div>
     </div>
 </div>

@@ -1,7 +1,7 @@
 ---
 import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
-import Item from "../../layouts/Item.astro";
+import Base from "../../layouts/Base.astro";
 import { PortableText } from "astro-portabletext";
 import { Image } from "astro:assets";
 import MainButton from "../../components/MainButton.astro";
@@ -63,8 +63,8 @@ if (!painting) {
 }
 ---
 
-<Item>
-  <main>
+<Base>
+  <div>
     <InquireModal id="my-modal" slug={slug} />
     <h1 class="title">
       <a href="/paintings" class="styledLink">Paintings</a>
@@ -127,7 +127,7 @@ if (!painting) {
       </div>
 
       {
-        painting.available && (
+        !painting.available && (
           <div class="not-available">
             <div>Not available!</div>
             <svg
@@ -148,15 +148,15 @@ if (!painting) {
         )
       }
       {
-        !painting.available && (
+        painting.available && (
           <MainButton id="open-modal" data-slug={slug}>
             Inquire
           </MainButton>
         )
       }
     </div>
-  </main>
-</Item>
+  </div>
+</Base>
 
 <style>
   .container {

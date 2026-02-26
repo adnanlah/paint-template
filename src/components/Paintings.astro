@@ -24,7 +24,7 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
 <div class={"container"}>
   <a href="/paintings" class:list={["styledLink", "title"]}>PAINTINGS</a>
   <div>
-    <a href="/paintings" class:list={["row", "clickableImage", "right"]}>
+    <a href="/paintings" class:list={["row", "clickableImage", "left"]}>
       {
         paintings.map((painting) => (
           <Image

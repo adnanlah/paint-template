@@ -22,9 +22,9 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
 <div class={"container"}>
-  <a href="/collages" class:list={["styledLink", "title"]}>DIGITAL COLLAGE</a>
+  <a href="/collages" class:list={["styledLink", "title"]}>DIGITAL COLLAGES</a>
   <div class="collages-container">
-    <a href="/collages" class:list={["row", "clickableImage", "left"]}>
+    <a href="/collages" class:list={["row", "clickableImage", "right"]}>
       {
         collages.map((collage) => (
           <Image
