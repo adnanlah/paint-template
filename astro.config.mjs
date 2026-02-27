@@ -8,7 +8,7 @@ export default defineConfig({
   integrations: [sanity({
     projectId: "qi3xtlxb",
     dataset: "production",
-    useCdn: false, // for static builds
+    useCdn: true, // for static builds
   })],
 
   vite: {
