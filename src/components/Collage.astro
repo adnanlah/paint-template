@@ -7,7 +7,7 @@ import { urlFor } from "../scripts/helpers";
 const QUERY = `*[
   _type == "collage"
   && highlighted == true
-]|order(year desc)[0..1]{_id, title, slug, highlighted, image{
+]|order(year desc)[0..2]{_id, title, slug, highlighted, image{
     asset->{
       _id,
       url,
@@ -71,14 +71,15 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
     display: inline-flex;
     flex-direction: row;
     justify-content: flex-end;
-    align-items: center;
+    align-items: start;
     gap: 2.5rem;
     overflow: visible;
+    width: 66%;
   }
 
   .collage {
     display: block;
-    width: auto;
-    height: 35rem;
+    width: 33%;
+    height: auto;
   }
 </style>

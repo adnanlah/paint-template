@@ -7,7 +7,7 @@ import { urlFor } from "../scripts/helpers";
 const QUERY = `*[
   _type == "painting"
   && highlighted == true
-]|order(year desc)[0..2]{_id, title, slug, width, height, highlighted, image{
+]|order(year desc)[0..3]{_id, title, slug, width, height, highlighted, image{
     asset->{
       _id,
       url,
@@ -64,14 +64,15 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
     display: inline-flex;
     flex-direction: row;
     justify-content: flex-start;
-    align-items: center;
+    align-items: start;
     gap: 2.5rem;
     overflow: visible;
+    width: 75%;
   }
 
   .painting {
     display: block;
-    width: auto;
-    height: 25rem;
+    width: 25%;
+    height: auto;
   }
 </style>

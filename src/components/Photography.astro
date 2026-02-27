@@ -66,14 +66,15 @@ const photography = await sanityClient.fetch<SanityDocument>(QUERY);
         display: inline-flex;
         flex-direction: row;
         justify-content: flex-start;
-        align-items: center;
+        align-items: start;
         gap: 2.5rem;
         overflow: visible;
+        width: 66%;
     }
 
     .photography {
         display: block;
-        width: auto;
-        height: 45rem;
+        width: 100%;
+        height: auto;
     }
 </style>
