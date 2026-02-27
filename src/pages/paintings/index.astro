@@ -4,6 +4,7 @@ import { sanityClient } from "sanity:client";
 import Base from "../../layouts/Base.astro";
 import { PortableText } from "astro-portabletext";
 import { Image } from "astro:assets";
+import { urlFor } from "../../scripts/helpers";
 
 const QUERY = `*[
   _type == "painting"
@@ -62,7 +63,9 @@ sortedPaintingsBySize.forEach((p) => {
                             ]}
                         >
                             <Image
-                                src={painting.image.asset.url}
+                                src={urlFor(painting.image.asset.url)
+                                    .width(1000)
+                                    .url()}
                                 alt={painting.title}
                                 width={
                                     painting.image.asset.metadata.dimensions

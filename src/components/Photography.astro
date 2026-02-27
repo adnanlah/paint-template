@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import { sanityClient } from "sanity:client";
 import type { SanityDocument } from "@sanity/client";
+import { urlFor } from "../scripts/helpers";
 
 const QUERY = `*[
   _type == "photography"
@@ -28,7 +29,9 @@ const photography = await sanityClient.fetch<SanityDocument>(QUERY);
             {
                 (
                     <Image
-                        src={photography.image.asset.url}
+                        src={urlFor(photography.image.asset.url)
+                            .width(800)
+                            .url()}
                         alt={photography.title}
                         width={
                             photography.image.asset.metadata.dimensions.width
@@ -68,7 +71,6 @@ const photography = await sanityClient.fetch<SanityDocument>(QUERY);
     .photography {
         display: block;
         width: auto;
-        height: auto;
-        max-height: 45rem;
+        height: 45rem;
     }
 </style>

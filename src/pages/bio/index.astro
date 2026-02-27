@@ -5,6 +5,7 @@ import Base from "../../layouts/Base.astro";
 import { PortableText } from "astro-portabletext";
 import { Image } from "astro:assets";
 import Download from "../../components/Download.astro";
+import { urlFor } from "../../scripts/helpers";
 
 const QUERY = `*[
   _type == "bio"
@@ -27,7 +28,7 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
     <h1>Biography</h1>
     <section class="container">
         <Image
-            src={bio[0].image.asset.url}
+            src={urlFor(bio[0].image.asset.url).width(1200).url()}
             width={bio[0].image.asset.metadata.dimensions.width}
             height={bio[0].image.asset.metadata.dimensions.height}
             alt="Bio image"

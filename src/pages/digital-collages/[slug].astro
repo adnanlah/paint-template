@@ -4,6 +4,7 @@ import { sanityClient } from "sanity:client";
 import Base from "../../layouts/Base.astro";
 import { PortableText } from "astro-portabletext";
 import { Image } from "astro:assets";
+import { urlFor } from "../../scripts/helpers";
 
 export async function getStaticPaths() {
     const slugs = await sanityClient.fetch(`
@@ -78,7 +79,7 @@ if (!photo) {
         </h1>
         <div class="image-container">
             <Image
-                src={photo.image.asset.url}
+                src={urlFor(photo.image.asset.url).width(2000).url()}
                 alt={photo.title}
                 width={photo.image.asset.metadata.dimensions.width}
                 height={photo.image.asset.metadata.dimensions.height}

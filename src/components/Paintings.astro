@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import { sanityClient } from "sanity:client";
 import type { SanityDocument } from "@sanity/client";
+import { urlFor } from "../scripts/helpers";
 
 const QUERY = `*[
   _type == "painting"
@@ -28,7 +29,7 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
       {
         paintings.map((painting) => (
           <Image
-            src={painting.image.asset.url}
+            src={urlFor(painting.image.asset.url).width(600).url()}
             alt={painting.title}
             width={painting.image.asset.metadata.dimensions.width}
             height={painting.image.asset.metadata.dimensions.height}
@@ -64,7 +65,6 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
   .painting {
     display: block;
     width: auto;
-    height: auto;
-    max-height: 25rem;
+    height: 25rem;
   }
 </style>

@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import { sanityClient } from "sanity:client";
 import type { SanityDocument } from "@sanity/client";
+import { urlFor } from "../scripts/helpers";
 
 const QUERY = `*[
   _type == "collage"
@@ -28,7 +29,7 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
       {
         collages.map((collage) => (
           <Image
-            src={collage.image.asset.url}
+            src={urlFor(collage.image.asset.url).width(600).url()}
             alt={collage.title}
             width={collage.image.asset.metadata.dimensions.width}
             height={collage.image.asset.metadata.dimensions.height}
@@ -69,7 +70,6 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
   .collage {
     display: block;
     width: auto;
-    height: auto;
-    max-height: 35rem;
+    height: 35rem;
   }
 </style>

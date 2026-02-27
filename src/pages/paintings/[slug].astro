@@ -6,6 +6,7 @@ import { PortableText } from "astro-portabletext";
 import { Image } from "astro:assets";
 import MainButton from "../../components/MainButton.astro";
 import InquireModal from "../../components/InquireModal.astro";
+import { urlFor } from "../../scripts/helpers";
 
 export async function getStaticPaths() {
   const slugs = await sanityClient.fetch(`
@@ -88,7 +89,7 @@ if (!painting) {
     </h1>
     <div class="image-container">
       <Image
-        src={painting.image.asset.url}
+        src={urlFor(painting.image.asset.url).width(2000).url()}
         alt={painting.title}
         width={painting.image.asset.metadata.dimensions.width}
         height={painting.image.asset.metadata.dimensions.height}
