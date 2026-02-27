@@ -31,8 +31,12 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
           <Image
             src={urlFor(collage.image.asset.url).width(600).url()}
             alt={collage.title}
-            width={collage.image.asset.metadata.dimensions.width}
-            height={collage.image.asset.metadata.dimensions.height}
+            width={600}
+            height={Math.round(
+              (collage.image.asset.metadata.dimensions.height /
+                collage.image.asset.metadata.dimensions.width) *
+                600,
+            )}
             class={"collage"}
           />
         ))

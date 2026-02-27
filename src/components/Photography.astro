@@ -33,12 +33,14 @@ const photography = await sanityClient.fetch<SanityDocument>(QUERY);
                             .width(800)
                             .url()}
                         alt={photography.title}
-                        width={
-                            photography.image.asset.metadata.dimensions.width
-                        }
-                        height={
-                            photography.image.asset.metadata.dimensions.height
-                        }
+                        width={800}
+                        height={Math.round(
+                            (photography.image.asset.metadata.dimensions
+                                .height /
+                                photography.image.asset.metadata.dimensions
+                                    .width) *
+                                800,
+                        )}
                         class={"photography"}
                     />
                 )

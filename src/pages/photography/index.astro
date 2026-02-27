@@ -31,14 +31,13 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY);
             {
                 photography.map((photo, idx) => (
                     <div
-                        class={`${"painting"} ${
-                            idx % 2 !== 0 ? "paintingReversed" : ""
-                        }`}
+                        class:list={["photo", { photoReversed: idx % 2 !== 0 }]}
                     >
                         <a
                             href={`/photography/${photo.slug.current}`}
                             class:list={[
                                 "clickableImage",
+                                "imageLink",
                                 { right: idx % 2 !== 0, left: idx % 2 === 0 },
                             ]}
                         >
@@ -47,12 +46,14 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY);
                                     .width(1000)
                                     .url()}
                                 alt={photo.title}
-                                width={
-                                    photo.image.asset.metadata.dimensions.width
-                                }
-                                height={
-                                    photo.image.asset.metadata.dimensions.height
-                                }
+                                width={1000}
+                                height={Math.round(
+                                    (photo.image.asset.metadata.dimensions
+                                        .height /
+                                        photo.image.asset.metadata.dimensions
+                                            .width) *
+                                        1000,
+                                )}
                                 class={"image"}
                             />
                         </a>
@@ -82,18 +83,13 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY);
 </Base>
 
 <style>
-    .note {
-        font-weight: 500;
-        margin-top: 1rem;
-    }
-
     .photos {
         display: flex;
         flex-direction: column;
         margin-top: 3.5rem;
     }
 
-    .painting {
+    .photo {
         height: 100vh;
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -101,45 +97,43 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY);
         align-items: center;
     }
 
-    .painting h2 {
+    .photo h2 {
         display: inline-block;
     }
 
-    .paintingReversed > :first-child {
+    .photoReversed > :first-child {
         order: 1;
     }
 
-    .paintingReversed > :last-child {
+    .photoReversed > :last-child {
         order: -1;
     }
 
-    .paintingReversed .info {
+    .photoReversed .info {
         justify-self: flex-start;
     }
 
-    .paintingReversed .info {
+    .photo .imageLink {
         justify-self: flex-end;
-    }
-
-    .paintingReversed .description {
-        text-align: right;
-    }
-
-    .painting .image {
-        justify-self: flex-end;
+        display: block;
         width: 100%;
         height: 100%;
-        object-fit: contain;
         overflow: hidden;
     }
 
-    .painting .info {
+    .photo .image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .photo .info {
         display: flex;
         flex-direction: column;
         gap: 2rem;
     }
 
-    .painting .details {
+    .photo .details {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;

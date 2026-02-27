@@ -79,10 +79,14 @@ if (!photo) {
         </h1>
         <div class="image-container">
             <Image
-                src={urlFor(photo.image.asset.url).width(2000).url()}
+                src={urlFor(photo.image.asset.url).width(1400).url()}
                 alt={photo.title}
-                width={photo.image.asset.metadata.dimensions.width}
-                height={photo.image.asset.metadata.dimensions.height}
+                width={1400}
+                height={Math.round(
+                    (photo.image.asset.metadata.dimensions.height /
+                        photo.image.asset.metadata.dimensions.width) *
+                        1400,
+                )}
                 class="image"
             />
         </div>

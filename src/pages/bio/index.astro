@@ -29,8 +29,12 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
     <section class="container">
         <Image
             src={urlFor(bio[0].image.asset.url).width(1200).url()}
-            width={bio[0].image.asset.metadata.dimensions.width}
-            height={bio[0].image.asset.metadata.dimensions.height}
+            width={1200}
+            height={Math.round(
+                (bio[0].image.asset.metadata.dimensions.height /
+                    bio[0].image.asset.metadata.dimensions.width) *
+                    1200,
+            )}
             alt="Bio image"
             class="image"
         />

@@ -31,14 +31,13 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
             {
                 collages.map((photo, idx) => (
                     <div
-                        class={`${"photo"} ${
-                            idx % 2 !== 0 ? "photoReversed" : ""
-                        }`}
+                        class:list={["photo", { photoReversed: idx % 2 !== 0 }]}
                     >
                         <a
                             href={`/digital-collages/${photo.slug.current}`}
                             class:list={[
                                 "clickableImage",
+                                "imageLink",
                                 { right: idx % 2 !== 0, left: idx % 2 === 0 },
                             ]}
                         >
@@ -47,12 +46,14 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
                                     .width(1000)
                                     .url()}
                                 alt={photo.title}
-                                width={
-                                    photo.image.asset.metadata.dimensions.width
-                                }
-                                height={
-                                    photo.image.asset.metadata.dimensions.height
-                                }
+                                width={1000}
+                                height={Math.round(
+                                    (photo.image.asset.metadata.dimensions
+                                        .height /
+                                        photo.image.asset.metadata.dimensions
+                                            .width) *
+                                        1000,
+                                )}
                                 class={"image"}
                             />
                         </a>
@@ -82,11 +83,6 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
 </Base>
 
 <style>
-    .note {
-        font-weight: 500;
-        margin-top: 1rem;
-    }
-
     .photos {
         display: flex;
         flex-direction: column;
@@ -125,12 +121,18 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
         text-align: right;
     }
 
-    .photo .image {
+    .photo .imageLink {
         justify-self: flex-end;
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .photo .image {
         width: 100%;
         height: 100%;
         object-fit: contain;
-        overflow: hidden;
     }
 
     .photo .info {

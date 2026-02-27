@@ -51,14 +51,16 @@ sortedPaintingsBySize.forEach((p) => {
             {
                 paintings.map((painting, idx) => (
                     <div
-                        class={`${"painting"} ${
-                            idx % 2 !== 0 ? "paintingReversed" : ""
-                        }`}
+                        class:list={[
+                            "painting",
+                            { paintingReversed: idx % 2 !== 0 },
+                        ]}
                     >
                         <a
                             href={`/paintings/${painting.slug.current}`}
                             class:list={[
                                 "clickableImage",
+                                "imageLink",
                                 { right: idx % 2 !== 0, left: idx % 2 === 0 },
                             ]}
                         >
@@ -67,14 +69,14 @@ sortedPaintingsBySize.forEach((p) => {
                                     .width(1000)
                                     .url()}
                                 alt={painting.title}
-                                width={
-                                    painting.image.asset.metadata.dimensions
-                                        .width
-                                }
-                                height={
-                                    painting.image.asset.metadata.dimensions
-                                        .height
-                                }
+                                width={1000}
+                                height={Math.round(
+                                    (painting.image.asset.metadata.dimensions
+                                        .height /
+                                        painting.image.asset.metadata.dimensions
+                                            .width) *
+                                        1000,
+                                )}
                                 class={"image"}
                                 style={`transform: scale(${scales[painting._id]})`}
                             />
@@ -142,18 +144,21 @@ sortedPaintingsBySize.forEach((p) => {
 
     .paintingReversed .info {
         justify-self: flex-end;
-    }
-
-    .paintingReversed .description {
         text-align: right;
     }
 
-    .painting .image {
+    .painting .imageLink {
         justify-self: flex-end;
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .painting .image {
         width: 100%;
         height: 100%;
         object-fit: contain;
-        overflow: hidden;
     }
 
     .painting .info {

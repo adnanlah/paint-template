@@ -31,8 +31,12 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
           <Image
             src={urlFor(painting.image.asset.url).width(600).url()}
             alt={painting.title}
-            width={painting.image.asset.metadata.dimensions.width}
-            height={painting.image.asset.metadata.dimensions.height}
+            width={600}
+            height={Math.round(
+              (painting.image.asset.metadata.dimensions.height /
+                painting.image.asset.metadata.dimensions.width) *
+                600,
+            )}
             class={"painting"}
           />
         ))
