@@ -29,7 +29,10 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
       {
         collages.map((collage) => (
           <Image
-            src={urlFor(collage.image.asset.url).width(600).url()}
+            src={urlFor(collage.image.asset.url)
+              .width(600)
+              .format("webp")
+              .url()}
             alt={collage.title}
             width={600}
             height={Math.round(

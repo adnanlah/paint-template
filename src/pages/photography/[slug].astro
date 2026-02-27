@@ -79,7 +79,10 @@ if (!photo) {
         </h1>
         <div class="image-container">
             <Image
-                src={urlFor(photo.image.asset.url).width(1400).url()}
+                src={urlFor(photo.image.asset.url)
+                    .width(1400)
+                    .format("webp")
+                    .url()}
                 alt={photo.title}
                 width={1400}
                 height={Math.round(

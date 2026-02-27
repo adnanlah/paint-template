@@ -89,7 +89,7 @@ if (!painting) {
     </h1>
     <div class="image-container">
       <Image
-        src={urlFor(painting.image.asset.url).width(1400).url()}
+        src={urlFor(painting.image.asset.url).width(1400).format("webp").url()}
         alt={painting.title}
         width={1400}
         height={Math.round(

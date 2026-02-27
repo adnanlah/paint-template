@@ -44,6 +44,7 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
                             <Image
                                 src={urlFor(photo.image.asset.url)
                                     .width(1000)
+                                    .format("webp")
                                     .url()}
                                 alt={photo.title}
                                 width={1000}

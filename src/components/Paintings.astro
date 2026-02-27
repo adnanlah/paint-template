@@ -29,7 +29,10 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
       {
         paintings.map((painting) => (
           <Image
-            src={urlFor(painting.image.asset.url).width(600).url()}
+            src={urlFor(painting.image.asset.url)
+              .width(600)
+              .format("webp")
+              .url()}
             alt={painting.title}
             width={600}
             height={Math.round(

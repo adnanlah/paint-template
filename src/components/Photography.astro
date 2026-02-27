@@ -31,6 +31,7 @@ const photography = await sanityClient.fetch<SanityDocument>(QUERY);
                     <Image
                         src={urlFor(photography.image.asset.url)
                             .width(800)
+                            .format("webp")
                             .url()}
                         alt={photography.title}
                         width={800}
