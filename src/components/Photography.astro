@@ -5,9 +5,8 @@ import type { SanityDocument } from "@sanity/client";
 import { urlFor } from "../scripts/helpers";
 
 const QUERY = `*[
-  _type == "photography"
-  && highlighted == true
-]|order(year desc)[0]{_id, title, slug, highlighted, image{
+  _type == "photography" && highlighted == true
+]|order(year desc)[0..1]{_id, title, slug, highlighted, image{
     asset->{
       _id,
       url,
@@ -19,7 +18,7 @@ const QUERY = `*[
     hotspot
   }}`;
 
-const photography = await sanityClient.fetch<SanityDocument>(QUERY);
+const photography = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
 <div class={"container"}>
@@ -27,24 +26,23 @@ const photography = await sanityClient.fetch<SanityDocument>(QUERY);
     <div>
         <a href="/photography" class:list={["row", "clickableImage", "left"]}>
             {
-                (
+                photography.map((photo, idx) => (
                     <Image
-                        src={urlFor(photography.image.asset.url)
+                        src={urlFor(photo.image.asset.url)
                             .width(800)
                             .format("webp")
                             .url()}
-                        alt={photography.title}
+                        alt={photo.title}
                         width={800}
                         height={Math.round(
-                            (photography.image.asset.metadata.dimensions
-                                .height /
-                                photography.image.asset.metadata.dimensions
-                                    .width) *
+                            (photo.image.asset.metadata.dimensions.height /
+                                photo.image.asset.metadata.dimensions.width) *
                                 800,
                         )}
                         class={"photography"}
+                        style={{ marginTop: 1 * idx + "rem" }}
                     />
-                )
+                ))
             }
         </a>
     </div>
@@ -69,12 +67,12 @@ const photography = await sanityClient.fetch<SanityDocument>(QUERY);
         align-items: start;
         gap: 2.5rem;
         overflow: visible;
-        width: 66%;
+        width: 80%;
     }
 
     .photography {
         display: block;
-        width: 100%;
+        width: 50%;
         height: auto;
     }
 </style>

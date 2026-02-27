@@ -27,7 +27,7 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
   <div>
     <a href="/paintings" class:list={["row", "clickableImage", "left"]}>
       {
-        paintings.map((painting) => (
+        paintings.map((painting, idx) => (
           <Image
             src={urlFor(painting.image.asset.url)
               .width(600)
@@ -41,6 +41,7 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
                 600,
             )}
             class={"painting"}
+            style={{ marginTop: 1 * idx + "rem" }}
           />
         ))
       }

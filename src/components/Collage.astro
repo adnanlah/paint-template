@@ -29,7 +29,7 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
   <div class="collages-container">
     <a href="/digital-collages" class:list={["row", "clickableImage", "right"]}>
       {
-        collages.map((collage) => (
+        collages.map((collage, idx) => (
           <Image
             src={urlFor(collage.image.asset.url)
               .width(600)
@@ -43,6 +43,7 @@ const collages = await sanityClient.fetch<SanityDocument[]>(QUERY);
                 600,
             )}
             class={"collage"}
+            style={{ marginTop: 1 * (collages.length - idx) + "rem" }}
           />
         ))
       }
