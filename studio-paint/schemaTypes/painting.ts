@@ -62,11 +62,18 @@ export const paintingType = defineType({
             type: 'image',
             validation: (rule) => rule.required(),
         }),
-
         defineField({
             name: 'body',
             type: 'array',
             of: [{ type: 'block' }],
         }),
+        defineField({
+            name: 'theme',
+            title: 'Theme',
+            type: 'reference',
+            to: [{ type: 'paintingTheme' }],
+            validation: Rule => Rule.required()
+        })
     ],
+    groups: []
 })

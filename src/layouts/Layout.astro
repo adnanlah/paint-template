@@ -34,11 +34,13 @@
 	body {
 		font-family: "Raleway", sans-serif;
 		font-optical-sizing: auto;
+		min-height: 100vh;
+		font-size: 14px;
 		font-weight: 400;
 		margin: 0;
+		padding: 0;
 		width: 100%;
-		/* background: rgb(255, 253, 225); */
-		background: linear-gradient(180deg, rgb(240, 241, 233), #f1ebea);
+		background: #fcfffc;
 		overflow-x: hidden;
 	}
 
@@ -50,7 +52,7 @@
 		position: relative;
 	}
 
-	a.styledLink::after {
+	/* a.styledLink::after {
 		content: "";
 		position: absolute;
 		left: 0;
@@ -67,6 +69,41 @@
 
 	a.styledLink:hover::after {
 		width: 100%;
+	} */
+
+	a.styledLink {
+		/* transition: all 0.1s ease-in-out; */
+	}
+
+	a.styledLink.active,
+	a.styledLink:hover {
+		color: #000 !important;
+		font-weight: 600;
+	}
+
+	/* a.styledLink:hover {
+		color: #000;
+		font-weight: 600;
+	} */
+
+	a.styledImage {
+		display: block;
+		overflow: hidden;
+		border-radius: inherit;
+		/* Needed for iOS safari clipping */
+		-webkit-mask-image: -webkit-radial-gradient(white, black);
+	}
+
+	a.styledImage img {
+		display: block;
+		width: 100%;
+		height: auto;
+		overflow: hidden !important;
+		transition: transform 0.3s ease-in-out;
+	}
+
+	a.styledImage:hover img {
+		transform: scale(1.02);
 	}
 
 	h1,

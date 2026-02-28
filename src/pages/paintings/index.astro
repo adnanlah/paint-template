@@ -2,103 +2,52 @@
 import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import Base from "../../layouts/Base.astro";
-import { PortableText } from "astro-portabletext";
 import { Image } from "astro:assets";
 import { urlFor } from "../../scripts/helpers";
 
 const QUERY = `*[
-  _type == "painting"
+  _type == "paintingTheme"
   && defined(slug.current)
-]|order(year desc){_id, title, slug, year, width, height, medium, body, available, image{
-    asset->{
-      _id,
-      url,
-      metadata{
-        dimensions
-      }
-    },
-    crop,
-    hotspot
-  }}`;
+]|order(year desc){_id, title, slug, image{asset->{_id, url, metadata{dimensions}}}}`;
 
-const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY);
-
-let scales: Record<string, number> = {};
-
-const sortedPaintingsBySize: SanityDocument[] = paintings.toSorted((a, b) => {
-    return (
-        Number(b.width) * Number(b.height) - Number(a.width) * Number(a.height)
-    );
-});
-
-sortedPaintingsBySize.forEach((p) => {
-    scales[p._id] = Math.pow(
-        (Number(p.width) * Number(p.height)) /
-            (sortedPaintingsBySize[0].width * sortedPaintingsBySize[0].height),
-        1 / 3,
-    );
-});
+const paintingThemes = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
 <Base>
     <div>
-        <h1>Paintings</h1>
-        <p class={"note"}>
-            Paintings are displayed at sizes proportional to their actual
-            dimensions.
-        </p>
-        <div class={"paintings"}>
+        <h2 style={{ margin: 0, padding: 0 }}>PAINTINGS</h2>
+        <div class={"themes"}>
             {
-                paintings.map((painting, idx) => (
-                    <div
-                        class:list={[
-                            "painting",
-                            { paintingReversed: idx % 2 !== 0 },
-                        ]}
-                    >
+                paintingThemes.map((theme) => (
+                    <div class:list={["theme"]}>
                         <a
-                            href={`/paintings/${painting.slug.current}`}
-                            class:list={[
-                                "clickableImage",
-                                "imageLink",
-                                { right: idx % 2 !== 0, left: idx % 2 === 0 },
-                            ]}
+                            href={`/paintings/theme/${theme.slug.current}`}
+                            class:list={["image-container", "styledImage"]}
                         >
                             <Image
-                                src={urlFor(painting.image.asset.url)
+                                src={urlFor(theme.image.asset.url)
                                     .width(1000)
                                     .format("webp")
                                     .url()}
-                                alt={painting.title}
+                                alt={theme.title}
                                 width={1000}
                                 height={Math.round(
-                                    (painting.image.asset.metadata.dimensions
+                                    (theme.image.asset.metadata.dimensions
                                         .height /
-                                        painting.image.asset.metadata.dimensions
+                                        theme.image.asset.metadata.dimensions
                                             .width) *
                                         1000,
                                 )}
-                                class={"image"}
-                                style={`transform: scale(${scales[painting._id]})`}
                             />
                         </a>
 
                         <div class={"info"}>
-                            <div>
-                                <a
-                                    href={`/paintings/${painting.slug.current}`}
-                                    class={"styledLink"}
-                                >
-                                    <h2>{painting.title}</h2>
-                                </a>
-                            </div>
-                            <div class={"details"}>
-                                <div class={"description"}>
-                                    {Array.isArray(painting.body) && (
-                                        <PortableText value={painting.body} />
-                                    )}
-                                </div>
-                            </div>
+                            <a
+                                href={`/paintings/theme/${theme.slug.current}`}
+                                class={"styledLink"}
+                            >
+                                {theme.title}
+                            </a>
                         </div>
                     </div>
                 ))
@@ -108,69 +57,36 @@ sortedPaintingsBySize.forEach((p) => {
 </Base>
 
 <style>
-    .note {
-        font-weight: 500;
-        margin-top: 1rem;
+    .themes {
+        margin-top: 2.5rem;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5rem;
     }
 
-    .paintings {
+    .theme {
         display: flex;
         flex-direction: column;
-        margin-top: 3.5rem;
-    }
-
-    .painting {
-        height: 100vh;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 5rem;
+        gap: 1rem;
         align-items: center;
     }
 
-    .painting h2 {
-        display: inline-block;
-    }
-
-    .paintingReversed > :first-child {
-        order: 1;
-    }
-
-    .paintingReversed > :last-child {
-        order: -1;
-    }
-
-    .paintingReversed .info {
-        justify-self: flex-start;
-    }
-
-    .paintingReversed .info {
-        justify-self: flex-end;
-        text-align: right;
-    }
-
-    .painting .imageLink {
-        justify-self: flex-end;
+    .theme .image-container {
         display: block;
         width: 100%;
-        height: 100%;
-        overflow: hidden;
     }
 
-    .painting .image {
+    .theme .image-container img {
         width: 100%;
-        height: 100%;
-        object-fit: contain;
+        height: auto;
+        aspect-ratio: 1/1;
+        object-fit: cover;
     }
 
-    .painting .info {
+    .theme .info {
         display: flex;
         flex-direction: column;
         gap: 2rem;
-    }
-
-    .painting .details {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+        text-transform: uppercase;
     }
 </style>

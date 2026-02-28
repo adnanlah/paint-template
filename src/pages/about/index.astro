@@ -25,7 +25,7 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
 <Base>
-    <h1>Biography</h1>
+    <!-- <h1>Biography</h1> -->
     <section class="container">
         <Image
             src={urlFor(bio[0].image.asset.url)
@@ -71,7 +71,7 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
             <PortableText value={bio[0].body} />
         </div>
         <div class="downloads">
-            Downloads: <Download
+            Collections: <Download
                 href="/El Bahi BELKHEIRI Artbook 2024.pdf"
                 download="El Bahi BELKHEIRI Artbook 2024.pdf"
                 text="Artbook"
@@ -95,7 +95,8 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
                 flex-direction: column;
                 justify-content: center;
                 align-items: stretch;
-                margin: 2.5rem auto 0 auto;
+                margin: 0 auto;
+                padding-bottom: 10rem;
             }
 
             .image {
@@ -114,6 +115,7 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
             .downloads {
                 margin-top: 2.5rem;
                 display: flex;
+                align-items: center;
                 gap: 1rem;
                 flex-grow: 1;
             }

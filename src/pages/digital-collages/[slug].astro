@@ -80,15 +80,15 @@ if (!photo) {
         <div class="image-container">
             <Image
                 src={urlFor(photo.image.asset.url)
-                    .width(1400)
+                    .width(1200)
                     .format("webp")
                     .url()}
                 alt={photo.title}
-                width={1400}
+                width={1200}
                 height={Math.round(
                     (photo.image.asset.metadata.dimensions.height /
                         photo.image.asset.metadata.dimensions.width) *
-                        1400,
+                        1200,
                 )}
                 class="image"
             />

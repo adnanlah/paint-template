@@ -22,8 +22,6 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 
-console.log(slug);
-
 if (!slug) {
   throw new Error("Missing slug param");
 }
@@ -51,8 +49,7 @@ const QUERY = `*[
     },
     crop,
     hotspot
-  },
-  publishedAt
+  }
 }`;
 
 const painting = await sanityClient.fetch<SanityDocument>(QUERY, {
@@ -67,108 +64,92 @@ if (!painting) {
 <Base>
   <div>
     <InquireModal id="my-modal" slug={slug} />
-    <h1 class="title">
-      <a href="/paintings" class="styledLink">Paintings</a>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="2.5"
-        stroke="currentColor"
-        class="size-6"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5"></path>
-      </svg>
-
-      <div>
-        {painting.title}
+    <h2>PAINTING: {painting.title}</h2>
+    <div class="container">
+      <div class="image-container">
+        <Image
+          src={urlFor(painting.image.asset.url)
+            .width(1200)
+            .format("webp")
+            .url()}
+          alt={painting.title}
+          width={1400}
+          height={Math.round(
+            (painting.image.asset.metadata.dimensions.height /
+              painting.image.asset.metadata.dimensions.width) *
+              1200,
+          )}
+          class="image"
+        />
       </div>
-    </h1>
-    <div class="image-container">
-      <Image
-        src={urlFor(painting.image.asset.url).width(1400).format("webp").url()}
-        alt={painting.title}
-        width={1400}
-        height={Math.round(
-          (painting.image.asset.metadata.dimensions.height /
-            painting.image.asset.metadata.dimensions.width) *
-            1400,
-        )}
-        class="image"
-      />
-    </div>
 
-    <div class={"details"}>
-      <h2>{painting.title}</h2>
       <div class="info">
-        {painting.year} • <div class="dimensions">
-          {painting.width}mm
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            class="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18 18 6M6 6l12 12"></path>
-          </svg>
-          {painting.height}mm
-        </div> • {painting.medium}
-      </div>
-      <div class="body">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique esse
-        quos dignissimos ratione sapiente nobis repellendus non quidem quasi cum
-        vitae maxime laborum error et sed porro doloribus sequi iusto, vel illum
-        iure odio tenetur debitis. Omnis molestias necessitatibus iusto. Autem
-        non harum dolore! Sunt labore dolorum quam natus officia!
-        <PortableText value={painting.body} />
-      </div>
-
-      {
-        !painting.available && (
-          <div class="not-available">
-            <div>Not available!</div>
+        <h2>{painting.title}</h2>
+        <div class="details">
+          {painting.year} • <div class="dimensions">
+            {painting.width}mm
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="1.5"
+              stroke-width="2"
               stroke="currentColor"
               class="size-6"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
-              />
+                d="M6 18 18 6M6 6l12 12"></path>
             </svg>
-          </div>
-        )
-      }
-      {
-        painting.available && (
-          <MainButton id="open-modal" data-slug={slug}>
-            Inquire
-          </MainButton>
-        )
-      }
+            {painting.height}mm
+          </div> • {painting.medium}
+        </div>
+        <div class="body">
+          <PortableText value={painting.body} />
+        </div>
+
+        {
+          !painting.available && (
+            <div class="not-available">
+              <div>Not available!</div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
+                />
+              </svg>
+            </div>
+          )
+        }
+        {
+          painting.available && (
+            <MainButton id="open-modal" data-slug={slug}>
+              Inquire
+            </MainButton>
+          )
+        }
+      </div>
     </div>
   </div>
 </Base>
 
 <style>
   .container {
-    padding: 0 7.5rem;
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: 40% 1fr;
+    gap: 2.5rem;
   }
 
-  .info,
+  .details,
   .dimensions {
     display: flex;
     align-items: center;
@@ -194,26 +175,21 @@ if (!painting) {
   .image-container {
     display: flex;
     justify-content: center;
-    margin-top: 2.5rem;
   }
 
   .image {
-    width: auto;
-    height: 80vh;
+    width: 100%;
+    height: auto;
   }
 
-  .details {
-    margin: 2.5rem auto 0 auto;
+  .info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    align-items: start;
     gap: 1rem;
-    text-align: center;
-    width: 33%;
   }
 
-  .details > .body {
+  .info > .body {
     text-align: left;
     line-height: 1.5;
   }

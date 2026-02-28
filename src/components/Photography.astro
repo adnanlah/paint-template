@@ -29,15 +29,15 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY);
                 photography.map((photo, idx) => (
                     <Image
                         src={urlFor(photo.image.asset.url)
-                            .width(800)
+                            .width(600)
                             .format("webp")
                             .url()}
                         alt={photo.title}
-                        width={800}
+                        width={600}
                         height={Math.round(
                             (photo.image.asset.metadata.dimensions.height /
                                 photo.image.asset.metadata.dimensions.width) *
-                                800,
+                                600,
                         )}
                         class={"photography"}
                         style={{ marginTop: 1 * idx + "rem" }}

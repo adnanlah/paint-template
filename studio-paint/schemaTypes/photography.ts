@@ -46,5 +46,12 @@ export const photographyType = defineType({
             initialValue: false,
             validation: (rule) => rule.required(),
         }),
+        defineField({
+            name: 'theme',
+            title: 'Theme',
+            type: 'reference',
+            to: [{ type: 'photographyTheme' }],
+            validation: Rule => Rule.required()
+        })
     ],
 })

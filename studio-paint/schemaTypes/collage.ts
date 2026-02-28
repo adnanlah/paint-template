@@ -46,5 +46,12 @@ export const collageType = defineType({
             type: 'array',
             of: [{ type: 'block' }],
         }),
+        defineField({
+            name: 'theme',
+            title: 'Theme',
+            type: 'reference',
+            to: [{ type: 'collageTheme' }],
+            validation: Rule => Rule.required()
+        })
     ],
 })

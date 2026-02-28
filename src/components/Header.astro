@@ -24,24 +24,17 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
     <a href="/" class={"logoContainer"} aria-label="Home"></a>
     <div class={"nav"}>
         <a href="/" class:list={["styledLink", { active: currentPath === "/" }]}
-            >Home</a
-        >
-        <a
-            href="/artwork"
-            class:list={[
-                "styledLink",
-                { active: currentPath.startsWith("/artwork") },
-            ]}>Artwork</a
+            >ARTWORK</a
         >
         <a
             href="/about"
             class:list={["styledLink", { active: currentPath === "/about" }]}
-            >About</a
+            >ABOUT</a
         >
         <a
-            href="/contact-me"
+            href="/contact"
             class:list={["styledLink", { active: currentPath === "/contact" }]}
-            >Contact</a
+            >CONTACT</a
         >
         <a
             href={bio[0].instagram}
@@ -99,9 +92,10 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
         align-items: center;
         gap: 2rem;
         justify-self: start;
+        color: #999999;
     }
 
-    .nav .icon {
+    /* .nav .icon {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -114,14 +108,31 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
             background-color 0.3s ease,
             color 0.3s ease,
             transform 0.3s ease;
+    } */
+
+    .nav a {
+        color: inherit;
     }
 
-    .nav .icon::after {
+    .nav .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        color: currentColor;
+    }
+
+    .nav .icon svg {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    /* .nav .icon::after {
         display: none;
     }
 
     .nav .icon:hover {
         background-color: #000;
         color: #fff;
-    }
+    } */
 </style>
