@@ -21,52 +21,34 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
 <div class={"container"}>
+    <a href="/" class={"logoContainer"} aria-label="Home"></a>
     <div class={"nav"}>
         <a href="/" class:list={["styledLink", { active: currentPath === "/" }]}
             >Home</a
         >
-        <!-- <a href="/paintings" class={"styledLink"}>Paintings</a>
-        <a href="/collage" class={"styledLink"}>Collage</a>
-        <a href="/photography" class={"styledLink"}>Photography</a> -->
         <a
-            href="/paintings"
+            href="/artwork"
             class:list={[
                 "styledLink",
-                { active: currentPath.startsWith("/paintings") },
-            ]}>Paintings</a
+                { active: currentPath.startsWith("/artwork") },
+            ]}>Artwork</a
         >
         <a
-            href="/digital-collages"
-            class:list={[
-                "styledLink",
-                { active: currentPath.startsWith("/digital-collages") },
-            ]}>Digital Collages</a
+            href="/about"
+            class:list={["styledLink", { active: currentPath === "/about" }]}
+            >About</a
         >
         <a
-            href="/photography"
-            class:list={[
-                "styledLink",
-                { active: currentPath.startsWith("/photography") },
-            ]}>Photography</a
-        >
-        <a
-            href="/bio"
-            class:list={["styledLink", { active: currentPath === "/bio" }]}
-            >Bio</a
-        >
-        <!-- <a
             href="/contact-me"
             class:list={["styledLink", { active: currentPath === "/contact" }]}
             >Contact</a
-        > -->
-    </div>
-    <a href="/" class={"logoContainer"} aria-label="Home"></a>
-    <div class={"socials"}>
+        >
         <a
             href={bio[0].instagram}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
+            class="icon"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -85,27 +67,6 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
                 ></line></svg
             >
         </a>
-        <a
-            href={bio[0].facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook"
-        >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path
-                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
-                ></path></svg
-            >
-        </a>
     </div>
 </div>
 
@@ -114,8 +75,8 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
         font-size: 1rem;
         padding: 5rem 7.5rem 2.5rem 7.5rem;
         font-weight: 500;
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
+        display: flex;
+        justify-content: space-between;
         align-items: center;
     }
 
@@ -140,13 +101,7 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
         justify-self: start;
     }
 
-    .socials {
-        display: flex;
-        gap: 1.5rem;
-        justify-self: end;
-    }
-
-    .socials a {
+    .nav .icon {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -161,11 +116,11 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
             transform 0.3s ease;
     }
 
-    .socials a::after {
+    .nav .icon::after {
         display: none;
     }
 
-    .socials a:hover {
+    .nav .icon:hover {
         background-color: #000;
         color: #fff;
     }
