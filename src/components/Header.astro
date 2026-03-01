@@ -100,7 +100,7 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
         }
 
         a.logoContainer:hover {
-            background-color: #999999;
+            background-color: var(--secondary-color);
         }
     }
 
@@ -113,7 +113,7 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
         align-items: center;
         gap: 2rem;
         justify-self: start;
-        color: #999999;
+        color: var(--secondary-color);
     }
 
     /* .nav .icon {
