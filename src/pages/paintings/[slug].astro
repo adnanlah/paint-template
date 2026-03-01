@@ -7,6 +7,7 @@ import { Image } from "astro:assets";
 import MainButton from "../../components/MainButton.astro";
 import InquireModal from "../../components/InquireModal.astro";
 import { urlFor } from "../../scripts/helpers";
+import Chevron from "../../components/Chevron.astro";
 
 export async function getStaticPaths() {
   const slugs = await sanityClient.fetch(`
@@ -68,20 +69,30 @@ if (!painting) {
 <Base>
   <div>
     <InquireModal id="my-modal" slug={slug} />
-    <h1>PAINTING -&gt; {painting.theme.title} -&gt; {painting.title}</h1>
+    <h1 class="breadcrumb">
+      <a href="/">ARTWORK</a>
+      <Chevron />
+      <a href="/paintings">PAINTINGS</a>
+      <Chevron />
+      <a href={`/paintings/theme/${painting.theme.slug.current}`}>
+        {painting.theme.title}
+      </a>
+      <Chevron />
+      {painting.title}
+    </h1>
     <div class="container">
       <div class="image-container">
         <Image
           src={urlFor(painting.image.asset.url)
-            .width(1200)
+            .width(2400)
             .format("webp")
             .url()}
           alt={painting.title}
-          width={1400}
+          width={2400}
           height={Math.round(
             (painting.image.asset.metadata.dimensions.height /
               painting.image.asset.metadata.dimensions.width) *
-              1200,
+              2400,
           )}
           class="image"
         />
@@ -153,6 +164,12 @@ if (!painting) {
     gap: 2.5rem;
   }
 
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
   .details,
   .dimensions {
     display: flex;
@@ -179,11 +196,14 @@ if (!painting) {
   .image-container {
     display: flex;
     justify-content: center;
+    overflow: hidden;
+    cursor: zoom-in;
   }
 
   .image {
     width: 100%;
     height: auto;
+    transition: transform 0.3s ease-out;
   }
 
   .info {
@@ -213,28 +233,64 @@ if (!painting) {
 </style>
 
 <script>
-  const modal = document.getElementById("my-modal") as HTMLDialogElement;
-  const openBtn = document.getElementById("open-modal") as HTMLButtonElement;
-  const closeBtn = document.getElementById("close-modal") as HTMLButtonElement;
+  const modal = document.getElementById("my-modal") as HTMLDialogElement | null;
+  const openBtn = document.getElementById(
+    "open-modal",
+  ) as HTMLButtonElement | null;
+  const closeBtn = document.getElementById(
+    "close-modal",
+  ) as HTMLButtonElement | null;
 
-  openBtn.addEventListener("click", () => {
-    modal.showModal();
-  });
+  if (openBtn && modal) {
+    openBtn.addEventListener("click", () => {
+      modal.showModal();
+    });
+  }
 
-  closeBtn.addEventListener("click", () => {
-    modal.close();
-  });
+  if (closeBtn && modal) {
+    closeBtn.addEventListener("click", () => {
+      modal.close();
+    });
+  }
 
-  modal.addEventListener("click", (e) => {
-    const rect = modal.getBoundingClientRect();
-    const clickedOutside =
-      e.clientX < rect.left ||
-      e.clientX > rect.right ||
-      e.clientY < rect.top ||
-      e.clientY > rect.bottom;
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      const rect = modal.getBoundingClientRect();
+      const clickedOutside =
+        e.clientX < rect.left ||
+        e.clientX > rect.right ||
+        e.clientY < rect.top ||
+        e.clientY > rect.bottom;
 
-    if (clickedOutside) modal.close();
-  });
+      if (clickedOutside) modal.close();
+    });
+  }
 
-  // Escape key is handled natively by <dialog> — no extra code needed!
+  const imageContainer = document.querySelector(
+    ".image-container",
+  ) as HTMLDivElement | null;
+  const image = document.querySelector(".image") as HTMLImageElement | null;
+
+  if (imageContainer && image) {
+    imageContainer.addEventListener("mousemove", (e) => {
+      const rect = imageContainer.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const xPercent = (x / rect.width) * 100;
+      const yPercent = (y / rect.height) * 100;
+
+      // Calculate scale to exactly match the loaded natural size relative to display size
+      const scale = image.naturalWidth ? image.naturalWidth / rect.width : 2.5;
+      const finalScale = Math.max(1.5, scale); // Minimum 1.5x zoom if source is small
+
+      image.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+      image.style.transform = `scale(${finalScale})`;
+    });
+
+    imageContainer.addEventListener("mouseleave", () => {
+      // image.style.transformOrigin = "center center";
+      image.style.transform = "scale(1)";
+    });
+  }
 </script>

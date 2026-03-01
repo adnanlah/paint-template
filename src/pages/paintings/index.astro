@@ -4,6 +4,7 @@ import { sanityClient } from "sanity:client";
 import Base from "../../layouts/Base.astro";
 import { Image } from "astro:assets";
 import { urlFor } from "../../scripts/helpers";
+import Chevron from "../../components/Chevron.astro";
 
 const QUERY = `*[
   _type == "paintingTheme"
@@ -20,7 +21,11 @@ const about = await sanityClient.fetch<SanityDocument[]>(ABOUT_QUERY);
 
 <Base>
     <div>
-        <h1>PAINTINGS</h1>
+        <h1 class="breadcrumb">
+            <a href="/">ARTWORK</a>
+            <Chevron />
+            <a href="/paintings">PAINTINGS</a>
+        </h1>
         <p class="page-note">{about[0].paintingMessage}</p>
         <div class={"themes"}>
             {
@@ -63,6 +68,12 @@ const about = await sanityClient.fetch<SanityDocument[]>(ABOUT_QUERY);
 </Base>
 
 <style>
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
     .page-note {
         margin-top: 1rem;
     }
