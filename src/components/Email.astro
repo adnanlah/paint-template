@@ -3,33 +3,23 @@ import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 
 const QUERY = `*[
-  _type == "bio"
-]|{_id, email, address, instagram, facebook, body, image{
-    asset->{
-      _id,
-      url,
-      metadata{
-        dimensions
-      }
-    },
-    crop,
-    hotspot
-  }}`;
+  _type == "about"
+]|{email}`;
 
-const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
+const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
-<div class={"container"}>
-    <div class={"portfolio"}>PORTFOLIO</div>
-    <div class={"name"}>EL BAHI BELKHEIRI</div>
-    <div class={"email"}>
-        <a href={"mailto:" + bio[0].email} class={"styledLink"}
-            >{bio[0].email.split("@")[0]}<span class={"emailSpan"}
-                >@{bio[0].email.split("@")[1]}</span
+<section class={"container"}>
+    <h2 class={"portfolio"}>PORTFOLIO</h2>
+    <h1 class={"name"}>EL BAHI BELKHEIRI</h1>
+    <h3 class={"email"}>
+        <a href={"mailto:" + about[0].email} class={"styledLink"}
+            >{about[0].email.split("@")[0]}<span class={"emailSpan"}
+                >@{about[0].email.split("@")[1]}</span
             ></a
         >
-    </div>
-</div>
+    </h3>
+</section>
 
 <style>
     .container {
@@ -43,11 +33,16 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
 
     .portfolio {
         font-size: 2.5rem;
+        font-weight: normal;
     }
 
     .name {
         font-size: 2.5rem;
         font-weight: bold;
+    }
+
+    .email {
+        font-weight: normal;
     }
 
     .emailSpan {

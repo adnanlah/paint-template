@@ -1,71 +1,13 @@
----
-import type { SanityDocument } from "@sanity/client";
-import { sanityClient } from "sanity:client";
-
-const QUERY = `*[
-  _type == "bio"
-]|{_id, email, address, instagram, facebook, body, image{
-    asset->{
-      _id,
-      url,
-      metadata{
-        dimensions
-      }
-    },
-    crop,
-    hotspot
-  }}`;
-
-const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
----
-
-<div class={"container"}>
-    <div class={"nav"}>
-        <a href="/" class={"logoContainer"} aria-label="Home"></a>
-        <div>
-            <div class={"creator"}>
-                <p>
-                    Built with &lt;3 by <a
-                        href="mailto:lahadn@gmail.com"
-                        class={"styledLink"}>A.L</a
-                    >
-                </p>
-            </div>
-        </div>
-    </div>
+<div class="footer">
+    <p>
+        Built with &lt;3 by <a href="mailto:lahadn@gmail.com">AL</a>
+    </p>
 </div>
 
 <style>
-    .container {
-        /* height: 10rem; */
-        /* background: rgb(20, 0, 0); */
+    .footer {
         display: flex;
-        flex-direction: column;
-        justify-content: end;
-        /* margin-top: 14rem; */
-    }
-
-    .nav {
-        /* background: linear-gradient(180deg, #fffef5, rgb(20, 0, 0) 70%); */
-        /* background: linear-gradient(180deg, #DAFA00, #A82B2C 50%); */
-        /* color: #f8e4e1; */
-        color: #200400;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5rem 7.5rem 2.5rem 7.5rem;
-    }
-
-    .nav a {
-        color: inherit;
-    }
-
-    a.logoContainer {
-        display: block;
-        width: 7.25rem;
-        aspect-ratio: 797 / 368;
-        background-color: #200400;
-        -webkit-mask: url("/logo.svg") no-repeat center / contain;
-        mask: url("/logo.svg") no-repeat center / contain;
+        justify-content: flex-end;
+        padding: 2.5rem 7.5rem;
     }
 </style>

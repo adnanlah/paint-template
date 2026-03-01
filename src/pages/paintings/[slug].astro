@@ -39,6 +39,10 @@ const QUERY = `*[
   medium,
   body,
   available,
+  theme->{
+    title,
+    slug
+  },
   image{
     asset->{
       _id,
@@ -64,7 +68,7 @@ if (!painting) {
 <Base>
   <div>
     <InquireModal id="my-modal" slug={slug} />
-    <h2>PAINTING: {painting.title}</h2>
+    <h1>PAINTING -&gt; {painting.theme.title} -&gt; {painting.title}</h1>
     <div class="container">
       <div class="image-container">
         <Image

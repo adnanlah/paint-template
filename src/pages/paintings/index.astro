@@ -10,12 +10,18 @@ const QUERY = `*[
   && defined(slug.current)
 ]|order(year desc){_id, title, slug, image{asset->{_id, url, metadata{dimensions}}}}`;
 
+const ABOUT_QUERY = `*[
+  _type == "about"
+]|{paintingMessage}`;
+
 const paintingThemes = await sanityClient.fetch<SanityDocument[]>(QUERY);
+const about = await sanityClient.fetch<SanityDocument[]>(ABOUT_QUERY);
 ---
 
 <Base>
     <div>
-        <h2 style={{ margin: 0, padding: 0 }}>PAINTINGS</h2>
+        <h1>PAINTINGS</h1>
+        <p class="page-note">{about[0].paintingMessage}</p>
         <div class={"themes"}>
             {
                 paintingThemes.map((theme) => (
@@ -57,6 +63,10 @@ const paintingThemes = await sanityClient.fetch<SanityDocument[]>(QUERY);
 </Base>
 
 <style>
+    .page-note {
+        margin-top: 1rem;
+    }
+
     .themes {
         margin-top: 2.5rem;
         display: grid;

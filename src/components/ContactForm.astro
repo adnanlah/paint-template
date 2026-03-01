@@ -1,0 +1,97 @@
+---
+const { slug } = Astro.props;
+---
+
+<form id="my-form" action="https://formspree.io/f/xykdazzl" method="POST">
+    <input type="text" name="name" placeholder="Name" />
+    <input type="email" name="email" placeholder="Email" />
+    <input
+        type="text"
+        placeholder="Subject"
+        class="artwork-slug"
+        name="artwork-slug"
+    />
+    <textarea name="message" placeholder="Message"></textarea>
+    <button type="submit" id="my-form-button">Send</button>
+    <p id="my-form-status"></p>
+</form>
+
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    input,
+    textarea {
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 0.5rem;
+    }
+
+    button {
+        padding: 0.5rem;
+        background-color: #000;
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+    }
+
+    textarea {
+        min-height: 5rem;
+        resize: none;
+    }
+</style>
+
+<script>
+    var form = document.getElementById("my-form") as HTMLFormElement | null;
+
+    if (!form) {
+        console.log("No inquire form found!");
+    } else {
+        async function handleSubmit(event: SubmitEvent) {
+            event.preventDefault();
+            var status = document.getElementById("my-form-status");
+            var target = event.target as HTMLFormElement;
+            var data = new FormData(target);
+            fetch(target.action, {
+                method: target.method,
+                body: data,
+                headers: {
+                    Accept: "application/json",
+                },
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        if (status)
+                            status.innerHTML = "Thanks for your submission!";
+                        target.reset();
+                    } else {
+                        response.json().then((data: any) => {
+                            if (Object.hasOwn(data, "errors")) {
+                                if (status) {
+                                    status.innerHTML = data["errors"]
+                                        .map((error: any) => error["message"])
+                                        .join(", ");
+                                }
+                            } else {
+                                if (status) {
+                                    status.innerHTML =
+                                        "Oops! There was a problem submitting your form";
+                                }
+                            }
+                        });
+                    }
+                })
+                .catch((error: unknown) => {
+                    if (status) {
+                        status.innerHTML =
+                            "Oops! There was a problem submitting your form";
+                    }
+                });
+        }
+        form.addEventListener("submit", handleSubmit);
+    }
+</script>

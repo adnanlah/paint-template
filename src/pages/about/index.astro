@@ -8,8 +8,8 @@ import Download from "../../components/Download.astro";
 import { urlFor } from "../../scripts/helpers";
 
 const QUERY = `*[
-  _type == "bio"
-]|{_id, email, address, instagram, facebook, body, image{
+  _type == "about"
+]|{_id, email, address, instagram, facebook, aboutText, aboutImage{
     asset->{
       _id,
       url,
@@ -21,104 +21,76 @@ const QUERY = `*[
     hotspot
   }}`;
 
-const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
+const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
 <Base>
-    <!-- <h1>Biography</h1> -->
+    <h1>ABOUT ME</h1>
     <section class="container">
         <Image
-            src={urlFor(bio[0].image.asset.url)
-                .width(1200)
+            src={urlFor(about[0].aboutImage.asset.url)
+                .width(800)
                 .format("webp")
                 .url()}
-            width={1200}
+            width={800}
             height={Math.round(
-                (bio[0].image.asset.metadata.dimensions.height /
-                    bio[0].image.asset.metadata.dimensions.width) *
-                    1200,
+                (about[0].aboutImage.asset.metadata.dimensions.height /
+                    about[0].aboutImage.asset.metadata.dimensions.width) *
+                    800,
             )}
-            alt="Bio image"
+            alt="About image"
             class="image"
         />
         <div class="body">
-            <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem
-                maxime accusamus saepe sequi aut dolores eius repudiandae?
-                Reprehenderit quos quaerat vitae doloremque architecto? Beatae,
-                similique. Molestias laudantium deserunt architecto ea aut
-                aperiam vero tempora iste itaque quia, ad numquam id voluptate
-                vel suscipit perferendis quae aliquid vitae consequuntur ipsum
-                odit!
-            </p>
+            <PortableText value={about[0].aboutText} />
 
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis,
-                illo. Unde vel, aliquid ullam sequi soluta voluptas nam nulla
-                reiciendis ratione tenetur corrupti totam perferendis quam!
-                Laboriosam, totam dicta, ut deleniti reprehenderit ducimus hic
-                suscipit fugit sequi pariatur, atque dignissimos iure tenetur?
-                Doloribus necessitatibus recusandae consectetur veritatis
-                officiis tempora dolore eaque molestiae repudiandae nobis sunt
-                cumque saepe ad obcaecati sint inventore fugit quas minus modi
-                explicabo, eveniet ratione expedita? Repellat culpa reiciendis
-                fuga! Error, necessitatibus numquam illo nulla perferendis vitae
-                cumque in ab! Magni sequi consequuntur enim tempore, ratione et
-                saepe velit optio non voluptate! Fugit, aliquam? Commodi, nobis
-                illum.
-            </p>
-
-            <PortableText value={bio[0].body} />
+            <div class="downloads">
+                Collections: <Download
+                    href="/El Bahi BELKHEIRI Artbook 2024.pdf"
+                    download="El Bahi BELKHEIRI Artbook 2024.pdf"
+                    text="Artbook"
+                />
+                <Download
+                    href="/El Bahi BELKHEIRI Memoire Eclatante.pdf"
+                    download="El Bahi BELKHEIRI Memoire Eclatante.pdf"
+                    text="Memoire Eclatante"
+                />
+                <Download
+                    href="/El Bahi BELKHEIRI Portfolio.pdf"
+                    download="El Bahi BELKHEIRI Portfolio.pdf"
+                    text="Portfolio"
+                />
+            </div>
         </div>
-        <div class="downloads">
-            Collections: <Download
-                href="/El Bahi BELKHEIRI Artbook 2024.pdf"
-                download="El Bahi BELKHEIRI Artbook 2024.pdf"
-                text="Artbook"
-            />
-            <Download
-                href="/El Bahi BELKHEIRI Memoire Eclatante.pdf"
-                download="El Bahi BELKHEIRI Memoire Eclatante.pdf"
-                text="Memoire Eclatante"
-            />
-            <Download
-                href="/El Bahi BELKHEIRI Portfolio.pdf"
-                download="El Bahi BELKHEIRI Portfolio.pdf"
-                text="Portfolio"
-            />
-        </div>
-
-        <style>
-            .container {
-                width: 50%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: stretch;
-                margin: 0 auto;
-                padding-bottom: 10rem;
-            }
-
-            .image {
-                width: 100%;
-                height: auto;
-            }
-
-            .body {
-                margin-top: 2.5rem;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-                line-height: 1.5;
-            }
-
-            .downloads {
-                margin-top: 2.5rem;
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-                flex-grow: 1;
-            }
-        </style>
     </section>
 </Base>
+
+<style>
+    .container {
+        width: 75%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        align-items: start;
+        margin: 2.5rem auto 0 auto;
+    }
+
+    .image {
+        width: 100%;
+        height: auto;
+    }
+
+    .body {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        line-height: 1.5;
+    }
+
+    .downloads {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-grow: 1;
+    }
+</style>

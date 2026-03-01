@@ -4,27 +4,27 @@ import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 
 const QUERY = `*[
-  _type == "bio"
-]|{_id, email, address, instagram, facebook, body, image{
-    asset->{
-      _id,
-      url,
-      metadata{
-        dimensions
-      }
-    },
-    crop,
-    hotspot
-  }}`;
+  _type == "about"
+]|{instagram}`;
 
-const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
+const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
 <div class={"container"}>
     <a href="/" class={"logoContainer"} aria-label="Home"></a>
     <div class={"nav"}>
-        <a href="/" class:list={["styledLink", { active: currentPath === "/" }]}
-            >ARTWORK</a
+        <a
+            href="/"
+            class:list={[
+                "styledLink",
+                {
+                    active:
+                        currentPath === "/" ||
+                        currentPath.startsWith("/paintings") ||
+                        currentPath.startsWith("/digital-collages") ||
+                        currentPath.startsWith("/photography"),
+                },
+            ]}>ARTWORK</a
         >
         <a
             href="/about"
@@ -37,11 +37,11 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
             >CONTACT</a
         >
         <a
-            href={bio[0].instagram}
+            href={about[0].instagram}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
-            class="icon"
+            class:list={["styledLink", "icon"]}
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +75,7 @@ const bio = await sanityClient.fetch<SanityDocument[]>(QUERY);
 
     a.logoContainer {
         display: block;
-        width: 7.25rem;
+        width: 7.5rem;
         aspect-ratio: 797 / 368;
         background-image: url("/logo.svg");
         background-repeat: no-repeat;

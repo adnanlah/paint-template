@@ -5,17 +5,27 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-	<Header />
-	<main>
-		<slot />
-	</main>
-	<!-- <Footer /> -->
+	<div class="container">
+		<div>
+			<Header />
+			<main>
+				<slot />
+			</main>
+		</div>
+		<Footer />
+	</div>
 </Layout>
 
 <style>
+	.container {
+		display: grid;
+		grid-template-rows: 1fr auto;
+		min-height: 100vh;
+	}
+
 	main {
 		max-width: 2400px;
 		margin: 0 auto;
-		padding: 0 7.5rem 7.5rem 7.5rem;
+		padding: 0 7.5rem;
 	}
 </style>

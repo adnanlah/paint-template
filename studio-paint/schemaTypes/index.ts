@@ -1,9 +1,9 @@
 import { paintingType } from './painting'
 import { collageType } from './collage'
 import { photographyType } from './photography'
-import { bioType } from './bio'
+import { aboutType } from './about'
 import { paintingThemeType } from './painting-theme'
 import { photographyThemeType } from './photography-theme'
 import { collageThemeType } from './collage-theme'
 
-export const schemaTypes = [paintingType, collageType, photographyType, bioType, paintingThemeType, photographyThemeType, collageThemeType]
+export const schemaTypes = [paintingType, collageType, photographyType, aboutType, paintingThemeType, photographyThemeType, collageThemeType]
