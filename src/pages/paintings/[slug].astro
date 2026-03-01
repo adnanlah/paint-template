@@ -7,7 +7,7 @@ import { Image } from "astro:assets";
 import MainButton from "../../components/MainButton.astro";
 import InquireModal from "../../components/InquireModal.astro";
 import { urlFor } from "../../scripts/helpers";
-import Chevron from "../../components/Chevron.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
 
 export async function getStaticPaths() {
   const slugs = await sanityClient.fetch(`
@@ -69,17 +69,17 @@ if (!painting) {
 <Base>
   <div>
     <InquireModal id="my-modal" slug={slug} />
-    <h1 class="breadcrumb">
-      <a href="/">ARTWORK</a>
-      <Chevron />
-      <a href="/paintings">PAINTINGS</a>
-      <Chevron />
-      <a href={`/paintings/theme/${painting.theme.slug.current}`}>
-        {painting.theme.title}
-      </a>
-      <Chevron />
-      {painting.title}
-    </h1>
+    <Breadcrumbs
+      links={[
+        { label: "ARTWORK", href: "/" },
+        { label: "PAINTINGS", href: "/paintings" },
+        {
+          label: painting.theme.title,
+          href: `/paintings/theme/${painting.theme.slug.current}`,
+        },
+      ]}
+      current={painting.title}
+    />
     <div class="container">
       <div class="image-container">
         <Image
@@ -164,12 +164,6 @@ if (!painting) {
     gap: 2.5rem;
   }
 
-  .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
   .details,
   .dimensions {
     display: flex;
@@ -197,7 +191,6 @@ if (!painting) {
     display: flex;
     justify-content: center;
     overflow: hidden;
-    cursor: zoom-in;
   }
 
   .image {

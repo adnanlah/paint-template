@@ -5,7 +5,7 @@ import Base from "../../../layouts/Base.astro";
 import { Image } from "astro:assets";
 import { urlFor } from "../../../scripts/helpers";
 import { PortableText } from "astro-portabletext";
-import Chevron from "../../../components/Chevron.astro";
+import Breadcrumbs from "../../../components/Breadcrumbs.astro";
 
 export async function getStaticPaths() {
     const slugs = await sanityClient.fetch(`
@@ -68,13 +68,13 @@ if (!theme) {
 
 <Base>
     <div class={"container"}>
-        <h1 class="breadcrumb">
-            <a href="/">ARTWORK</a>
-            <Chevron />
-            <a href="/paintings">PAINTINGS</a>
-            <Chevron />
-            {theme.title}
-        </h1>
+        <Breadcrumbs
+            links={[
+                { label: "ARTWORK", href: "/" },
+                { label: "PAINTINGS", href: "/paintings" },
+            ]}
+            current={theme.title}
+        />
         <div class={"paintings"}>
             {
                 paintings.map((painting) => (
@@ -141,12 +141,6 @@ if (!theme) {
 </Base>
 
 <style>
-    .breadcrumb {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
     .paintings {
         margin-top: 2.5rem;
         display: flex;

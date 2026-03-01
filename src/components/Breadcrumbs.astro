@@ -1,0 +1,33 @@
+---
+import Chevron from "./Chevron.astro";
+
+interface Props {
+    links: {
+        label: string;
+        href: string;
+    }[];
+    current?: string;
+}
+
+const { links, current } = Astro.props;
+---
+
+<h2 class="breadcrumbs">
+    {
+        links.map((link, index) => (
+            <>
+                <a href={link.href}>{link.label}</a>
+                {(index < links.length - 1 || current) && <Chevron />}
+            </>
+        ))
+    }
+    {current && <span>{current}</span>}
+</h2>
+
+<style>
+    .breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+</style>
