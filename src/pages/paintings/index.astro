@@ -27,7 +27,11 @@ const about = await sanityClient.fetch<SanityDocument[]>(ABOUT_QUERY);
                 { label: "PAINTINGS", href: "/paintings" },
             ]}
         />
-        <p class="page-note">{about[0].paintingMessage}</p>
+        {
+            about[0].paintingMessage && (
+                <p class="page-note">{about[0].paintingMessage}</p>
+            )
+        }
         <div class={"themes"}>
             {
                 paintingThemes.map((theme) => (
@@ -102,7 +106,7 @@ const about = await sanityClient.fetch<SanityDocument[]>(ABOUT_QUERY);
     .theme .info {
         display: flex;
         flex-direction: column;
-        gap: 2rem;
+        gap: 2.5rem;
         text-transform: uppercase;
     }
 </style>
