@@ -12,7 +12,7 @@ interface Props {
 const { links, current } = Astro.props;
 ---
 
-<h2 class="breadcrumbs">
+<h1 class="breadcrumbs">
     {
         links.map((link, index) => (
             <>
@@ -22,12 +22,13 @@ const { links, current } = Astro.props;
         ))
     }
     {current && <span>{current}</span>}
-</h2>
+</h1>
 
 <style>
     .breadcrumbs {
         display: flex;
         align-items: center;
+        font-weight: 400 !important;
         gap: 1rem;
     }
 </style>

@@ -1,35 +1,39 @@
 ---
 import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
-import Base from "../../layouts/Base.astro";
 import { PortableText } from "astro-portabletext";
 import { Image } from "astro:assets";
-import MainButton from "../../components/MainButton.astro";
-import InquireModal from "../../components/InquireModal.astro";
-import { urlFor } from "../../scripts/helpers";
-import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import MainButton from "../../../../components/MainButton.astro";
+import InquireModal from "../../../../components/InquireModal.astro";
+import { urlFor } from "../../../../scripts/helpers";
+import Breadcrumbs from "../../../../components/Breadcrumbs.astro";
+import Base from "../../../../layouts/Base.astro";
 
 export async function getStaticPaths() {
   const slugs = await sanityClient.fetch(`
     *[_type == "painting" && defined(slug.current)]{
-      "slug": slug.current
+      "slug": slug.current,
+      "themeslug": theme->slug.current
     }
   `);
 
-  return slugs.map((s: { slug: any }) => ({
-    params: { slug: s.slug },
+  return slugs.map((s: { slug: any; themeslug: any }) => ({
+    params: {
+      paintingslug: s.slug,
+      themeslug: s.themeslug,
+    },
   }));
 }
 
-const { slug } = Astro.params;
+const { paintingslug, themeslug } = Astro.params;
 
-if (!slug) {
-  throw new Error("Missing slug param");
+if (!paintingslug || !themeslug) {
+  throw new Error("Missing slugs params");
 }
 
 const QUERY = `*[
   _type == "painting" &&
-  slug.current == $slug
+  slug.current == $paintingslug
 ][0]{
   _id,
   title,
@@ -58,7 +62,7 @@ const QUERY = `*[
 }`;
 
 const painting = await sanityClient.fetch<SanityDocument>(QUERY, {
-  slug,
+  paintingslug,
 });
 
 if (!painting) {
@@ -68,7 +72,7 @@ if (!painting) {
 
 <Base>
   <div>
-    <InquireModal id="my-modal" slug={slug} />
+    <InquireModal id="my-modal" slug={paintingslug} />
     <Breadcrumbs
       links={[
         { label: "ARTWORK", href: "/" },
@@ -83,10 +87,7 @@ if (!painting) {
     <div class="container">
       <div class="image-container">
         <Image
-          src={urlFor(painting.image.asset.url)
-            .width(2400)
-            .format("webp")
-            .url()}
+          src={urlFor(painting.image.asset.url).width(800).format("webp").url()}
           alt={painting.title}
           width={2400}
           height={Math.round(
@@ -95,6 +96,10 @@ if (!painting) {
               2400,
           )}
           class="image"
+          data-highres={urlFor(painting.image.asset.url)
+            .width(2400)
+            .format("webp")
+            .url()}
         />
       </div>
 
@@ -146,7 +151,7 @@ if (!painting) {
         }
         {
           painting.available && (
-            <MainButton id="open-modal" data-slug={slug}>
+            <MainButton id="open-modal" data-slug={paintingslug}>
               Inquire
             </MainButton>
           )
@@ -265,6 +270,23 @@ if (!painting) {
   const image = document.querySelector(".image") as HTMLImageElement | null;
 
   if (imageContainer && image) {
+    let highResLoaded = false;
+
+    imageContainer.addEventListener("mouseenter", () => {
+      if (!highResLoaded && image.dataset.highres) {
+        const highResUrl = image.dataset.highres;
+        const tempImg = new window.Image();
+        tempImg.onload = () => {
+          image.src = highResUrl;
+          if (image.srcset) {
+            image.removeAttribute("srcset");
+          }
+          highResLoaded = true;
+        };
+        tempImg.src = highResUrl;
+      }
+    });
+
     imageContainer.addEventListener("mousemove", (e) => {
       const rect = imageContainer.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -274,7 +296,8 @@ if (!painting) {
       const yPercent = (y / rect.height) * 100;
 
       // Calculate scale to exactly match the loaded natural size relative to display size
-      const scale = image.naturalWidth ? image.naturalWidth / rect.width : 2.5;
+      const targetWidth = image.dataset.highres ? 2400 : image.naturalWidth;
+      const scale = targetWidth ? targetWidth / rect.width : 2.5;
       const finalScale = Math.max(1.5, scale); // Minimum 1.5x zoom if source is small
 
       image.style.transformOrigin = `${xPercent}% ${yPercent}%`;

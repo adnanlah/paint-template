@@ -80,7 +80,7 @@ if (!theme) {
                 paintings.map((painting) => (
                     <div class={"painting"}>
                         <a
-                            href={`/paintings/${painting.slug.current}`}
+                            href={`/paintings/theme/${slug}/${painting.slug.current}`}
                             class="styledImage"
                         >
                             <Image
@@ -102,7 +102,7 @@ if (!theme) {
                         </a>
                         <div class="info">
                             <a
-                                href={`/paintings/${painting.slug.current}`}
+                                href={`/paintings/theme/${slug}/${painting.slug.current}`}
                                 class="styledLink"
                             >
                                 <h2>{painting.title}</h2>
