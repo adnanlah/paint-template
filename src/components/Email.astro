@@ -1,25 +1,7 @@
----
-import type { SanityDocument } from "@sanity/client";
-import { sanityClient } from "sanity:client";
-
-const QUERY = `*[
-  _type == "about"
-]|{email}`;
-
-const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
----
-
 <section class={"container"}>
     <h2 class={"portfolio"}>PORTFOLIO</h2>
     <h1 class={"name"}>EL BAHI BELKHEIRI</h1>
     <p>A VISUAL ARTIST</p>
-    <!-- <h3 class={"email"}>
-        <a href={"mailto:" + about[0].email} class={"styledLink"}
-            >{about[0].email.split("@")[0]}<span class={"emailSpan"}
-                >@{about[0].email.split("@")[1]}</span
-            ></a
-        >
-    </h3> -->
 </section>
 
 <style>
@@ -39,14 +21,6 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
 
     .name {
         font-size: 2rem;
-        font-weight: bold;
-    }
-
-    .email {
-        font-weight: normal;
-    }
-
-    .emailSpan {
         font-weight: bold;
     }
 </style>

@@ -19,7 +19,7 @@ const paintingThemes = await sanityClient.fetch<SanityDocument[]>(QUERY);
 const about = await sanityClient.fetch<SanityDocument[]>(ABOUT_QUERY);
 ---
 
-<Base>
+<Base title="PAINTINGS">
     <div>
         <Breadcrumbs
             links={[
