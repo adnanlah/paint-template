@@ -2,9 +2,10 @@
 import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import Base from "../../layouts/Base.astro";
-import { Image } from "astro:assets";
 import { urlFor } from "../../scripts/helpers";
 import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import PageNote from "../../components/PageNote.astro";
+import Themes from "../../components/Themes.astro";
 
 const QUERY = `*[
   _type == "paintingTheme"
@@ -17,96 +18,31 @@ const ABOUT_QUERY = `*[
 
 const paintingThemes = await sanityClient.fetch<SanityDocument[]>(QUERY);
 const about = await sanityClient.fetch<SanityDocument[]>(ABOUT_QUERY);
+
+const themes = paintingThemes.map((theme) => {
+    return {
+        title: theme.title,
+        url: `/paintings/theme/${theme.slug.current}`,
+        image: {
+            url: urlFor(theme.image.asset.url).width(1000).format("webp").url(),
+            height: theme.image.asset.metadata.dimensions.height,
+            width: theme.image.asset.metadata.dimensions.width,
+        },
+    };
+});
 ---
 
 <Base title="PAINTINGS">
     <div>
         <Breadcrumbs
-            links={[
-                { label: "ARTWORK", href: "/" },
-                { label: "PAINTINGS", href: "/paintings" },
-            ]}
+            links={[{ label: "ARTWORK", href: "/" }]}
+            current="PAINTINGS"
         />
         {
             about[0].paintingMessage && (
-                <p class="page-note">{about[0].paintingMessage}</p>
+                <PageNote note={about[0].paintingMessage} />
             )
         }
-        <div class={"themes"}>
-            {
-                paintingThemes.map((theme) => (
-                    <div class:list={["theme"]}>
-                        <a
-                            href={`/paintings/theme/${theme.slug.current}`}
-                            class:list={["image-container", "styledImage"]}
-                        >
-                            <Image
-                                src={urlFor(theme.image.asset.url)
-                                    .width(1000)
-                                    .format("webp")
-                                    .url()}
-                                alt={theme.title}
-                                width={1000}
-                                height={Math.round(
-                                    (theme.image.asset.metadata.dimensions
-                                        .height /
-                                        theme.image.asset.metadata.dimensions
-                                            .width) *
-                                        1000,
-                                )}
-                            />
-                        </a>
-
-                        <div class={"info"}>
-                            <a
-                                href={`/paintings/theme/${theme.slug.current}`}
-                                class={"styledLink"}
-                            >
-                                {theme.title}
-                            </a>
-                        </div>
-                    </div>
-                ))
-            }
-        </div>
+        <Themes paintingThemes={themes} />
     </div>
 </Base>
-
-<style>
-    .page-note {
-        margin-top: 1rem;
-    }
-
-    .themes {
-        margin-top: 2.5rem;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 5rem;
-    }
-
-    .theme {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .theme .image-container {
-        display: block;
-        width: 100%;
-    }
-
-    .theme .image-container img {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 1/1;
-        object-fit: cover;
-    }
-
-    .theme .info {
-        display: flex;
-        flex-direction: column;
-        gap: 2.5rem;
-        text-transform: uppercase;
-    }
-</style>

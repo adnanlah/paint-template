@@ -1,0 +1,78 @@
+---
+import { Image } from "astro:assets";
+
+const { paintingThemes } = Astro.props as {
+    paintingThemes: {
+        title: string;
+        url: string;
+        image: {
+            url: string;
+            height: number;
+            width: number;
+        };
+    }[];
+};
+---
+
+<div class={"themes"}>
+    {
+        paintingThemes.map((theme) => (
+            <div class:list={["theme"]}>
+                <a
+                    href={theme.url}
+                    class:list={["image-container", "styledImage"]}
+                >
+                    <Image
+                        src={theme.image.url}
+                        alt={theme.title}
+                        width={1000}
+                        height={Math.round(
+                            (theme.image.height / theme.image.width) * 1000,
+                        )}
+                    />
+                </a>
+
+                <div class={"info"}>
+                    <a href={theme.url} class={"styledLink"}>
+                        {theme.title}
+                    </a>
+                </div>
+            </div>
+        ))
+    }
+</div>
+
+<style>
+    .themes {
+        margin-top: 2.5rem;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5rem;
+    }
+
+    .theme {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .theme .image-container {
+        display: block;
+        width: 100%;
+    }
+
+    .theme .image-container img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+    }
+
+    .theme .info {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+        text-transform: uppercase;
+    }
+</style>
