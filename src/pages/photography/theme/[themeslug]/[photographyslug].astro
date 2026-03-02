@@ -1,0 +1,93 @@
+---
+import type { SanityDocument } from "@sanity/client";
+import { sanityClient } from "sanity:client";
+import Breadcrumbs from "../../../../components/Breadcrumbs.astro";
+import Base from "../../../../layouts/Base.astro";
+import Body from "../../../../components/Body.astro";
+import Artwork from "../../../../components/Artwork.astro";
+
+export async function getStaticPaths() {
+  const slugs = await sanityClient.fetch(`
+    *[_type == "photography" && defined(slug.current)]{
+      "slug": slug.current,
+      "themeslug": theme->slug.current
+    }
+  `);
+
+  return slugs.map((s: { slug: any; themeslug: any }) => ({
+    params: {
+      photographyslug: s.slug,
+      themeslug: s.themeslug,
+    },
+  }));
+}
+
+const { photographyslug, themeslug } = Astro.params;
+
+if (!photographyslug || !themeslug) {
+  throw new Error("Missing slugs params");
+}
+
+const QUERY = `*[
+  _type == "photography" &&
+  slug.current == $photographyslug
+][0]{
+  _id,
+  title,
+  slug,
+  year,
+  body,
+  theme->{
+    title,
+    slug
+  },
+  image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    }
+  }
+}`;
+
+const photography = await sanityClient.fetch<SanityDocument>(QUERY, {
+  photographyslug,
+});
+
+if (!photography) {
+  return Astro.redirect("/404");
+}
+---
+
+<Base title={photography.title}>
+  <Breadcrumbs
+    links={[
+      { label: "ARTWORK", href: "/" },
+      { label: "PHOTOGRAPHY", href: "/photography" },
+      {
+        label: photography.theme.title,
+        href: `/photography/theme/${photography.theme.slug.current}`,
+      },
+    ]}
+    current={photography.title}
+  />
+  <div class="container">
+    <Artwork
+      title={photography.title}
+      imageUrl={photography.image.asset.url}
+      width={photography.image.asset.metadata.dimensions.width}
+      height={photography.image.asset.metadata.dimensions.height}
+    >
+      <div>Year: {photography.year}</div>
+      {photography.body && <Body value={photography.body} />}
+    </Artwork>
+  </div>
+</Base>
+
+<style>
+  .container {
+    margin-top: 2.5rem;
+  }
+</style>

@@ -1,8 +1,8 @@
 ---
 import { Image } from "astro:assets";
 
-const { paintingThemes } = Astro.props as {
-    paintingThemes: {
+const { themes } = Astro.props as {
+    themes: {
         title: string;
         url: string;
         image: {
@@ -16,7 +16,7 @@ const { paintingThemes } = Astro.props as {
 
 <div class={"container"}>
     {
-        paintingThemes.map((theme) => (
+        themes.map((theme) => (
             <div class:list={["theme"]}>
                 <a
                     href={theme.url}

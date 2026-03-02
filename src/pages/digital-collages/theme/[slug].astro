@@ -5,14 +5,11 @@ import Base from "../../../layouts/Base.astro";
 
 import Breadcrumbs from "../../../components/Breadcrumbs.astro";
 import ThemeImage from "../../../components/ThemeImage.astro";
-import { PortableText } from "astro-portabletext";
-import Dimensions from "../../../components/Dimensions.astro";
 import Body from "../../../components/Body.astro";
-import PaintingDetails from "../../../components/PaintingDetails.astro";
 
 export async function getStaticPaths() {
     const slugs = await sanityClient.fetch(`
-    *[_type == "paintingTheme" && defined(slug.current)]{
+    *[_type == "collageTheme" && defined(slug.current)]{
       "slug": slug.current
     }
   `);
@@ -29,16 +26,13 @@ if (!slug) {
 }
 
 const QUERY = `*[
-  _type == "painting"
+  _type == "collage"
   && theme->slug.current == $slug
 ]|order(year desc){
   _id, 
   title, 
   slug, 
   year, 
-  width, 
-  height, 
-  medium,
   body,
   theme->{
     title,
@@ -47,43 +41,45 @@ const QUERY = `*[
   image{asset->{_id, url, metadata{dimensions}}}}
 `;
 
-const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY, {
+const digitalCollages = await sanityClient.fetch<SanityDocument[]>(QUERY, {
     slug,
 });
 
-if (!paintings) {
+if (!digitalCollages) {
     return Astro.redirect("/404");
 }
 ---
 
-<Base title={paintings[0].theme.title}>
+<Base title={digitalCollages[0].theme.title}>
     <div>
         <Breadcrumbs
             links={[
                 { label: "ARTWORK", href: "/" },
-                { label: "PAINTINGS", href: "/paintings" },
+                { label: "DIGITAL COLLAGES", href: "/digital-collages" },
             ]}
-            current={paintings[0].theme.title}
+            current={digitalCollages[0].theme.title}
         />
         <div class="container">
             {
-                paintings.map((painting) => (
+                digitalCollages.map((digitalCollage) => (
                     <ThemeImage
-                        title={painting.title}
-                        imageUrl={painting.image.asset.url}
-                        url={`/paintings/theme/${slug}/${painting.slug.current}`}
-                        width={painting.image.asset.metadata.dimensions.width}
-                        height={painting.image.asset.metadata.dimensions.height}
+                        title={digitalCollage.title}
+                        imageUrl={digitalCollage.image.asset.url}
+                        url={`/digital-collages/theme/${slug}/${digitalCollage.slug.current}`}
+                        width={
+                            digitalCollage.image.asset.metadata.dimensions.width
+                        }
+                        height={
+                            digitalCollage.image.asset.metadata.dimensions
+                                .height
+                        }
                     >
-                        <PaintingDetails
-                            painting={{
-                                year: painting.year,
-                                width: painting.width,
-                                height: painting.height,
-                                medium: painting.medium,
-                            }}
-                        />
-                        <Body value={painting.body} />
+                        <div>
+                            <b>Year:</b> {digitalCollage.year}
+                        </div>
+                        {digitalCollage.body && (
+                            <Body value={digitalCollage.body} />
+                        )}
                     </ThemeImage>
                 ))
             }

@@ -5,14 +5,11 @@ import Base from "../../../layouts/Base.astro";
 
 import Breadcrumbs from "../../../components/Breadcrumbs.astro";
 import ThemeImage from "../../../components/ThemeImage.astro";
-import { PortableText } from "astro-portabletext";
-import Dimensions from "../../../components/Dimensions.astro";
 import Body from "../../../components/Body.astro";
-import PaintingDetails from "../../../components/PaintingDetails.astro";
 
 export async function getStaticPaths() {
     const slugs = await sanityClient.fetch(`
-    *[_type == "paintingTheme" && defined(slug.current)]{
+    *[_type == "photographyTheme" && defined(slug.current)]{
       "slug": slug.current
     }
   `);
@@ -29,16 +26,13 @@ if (!slug) {
 }
 
 const QUERY = `*[
-  _type == "painting"
+  _type == "photography"
   && theme->slug.current == $slug
 ]|order(year desc){
   _id, 
   title, 
   slug, 
   year, 
-  width, 
-  height, 
-  medium,
   body,
   theme->{
     title,
@@ -47,43 +41,42 @@ const QUERY = `*[
   image{asset->{_id, url, metadata{dimensions}}}}
 `;
 
-const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY, {
+const photography = await sanityClient.fetch<SanityDocument[]>(QUERY, {
     slug,
 });
 
-if (!paintings) {
+if (!photography) {
     return Astro.redirect("/404");
 }
 ---
 
-<Base title={paintings[0].theme.title}>
+<Base title={photography[0].theme.title}>
     <div>
         <Breadcrumbs
             links={[
                 { label: "ARTWORK", href: "/" },
-                { label: "PAINTINGS", href: "/paintings" },
+                { label: "PHOTOGRAPHY", href: "/photography" },
             ]}
-            current={paintings[0].theme.title}
+            current={photography[0].theme.title}
         />
         <div class="container">
             {
-                paintings.map((painting) => (
+                photography.map((photography) => (
                     <ThemeImage
-                        title={painting.title}
-                        imageUrl={painting.image.asset.url}
-                        url={`/paintings/theme/${slug}/${painting.slug.current}`}
-                        width={painting.image.asset.metadata.dimensions.width}
-                        height={painting.image.asset.metadata.dimensions.height}
+                        title={photography.title}
+                        imageUrl={photography.image.asset.url}
+                        url={`/photography/theme/${slug}/${photography.slug.current}`}
+                        width={
+                            photography.image.asset.metadata.dimensions.width
+                        }
+                        height={
+                            photography.image.asset.metadata.dimensions.height
+                        }
                     >
-                        <PaintingDetails
-                            painting={{
-                                year: painting.year,
-                                width: painting.width,
-                                height: painting.height,
-                                medium: painting.medium,
-                            }}
-                        />
-                        <Body value={painting.body} />
+                        <div>
+                            <b>Year:</b> {photography.year}
+                        </div>
+                        {photography.body && <Body value={photography.body} />}
                     </ThemeImage>
                 ))
             }

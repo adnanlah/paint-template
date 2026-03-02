@@ -1,0 +1,93 @@
+---
+import type { SanityDocument } from "@sanity/client";
+import { sanityClient } from "sanity:client";
+import Breadcrumbs from "../../../../components/Breadcrumbs.astro";
+import Base from "../../../../layouts/Base.astro";
+import Body from "../../../../components/Body.astro";
+import Artwork from "../../../../components/Artwork.astro";
+
+export async function getStaticPaths() {
+  const slugs = await sanityClient.fetch(`
+    *[_type == "collage" && defined(slug.current)]{
+      "slug": slug.current,
+      "themeslug": theme->slug.current
+    }
+  `);
+
+  return slugs.map((s: { slug: any; themeslug: any }) => ({
+    params: {
+      collageslug: s.slug,
+      themeslug: s.themeslug,
+    },
+  }));
+}
+
+const { collageslug, themeslug } = Astro.params;
+
+if (!collageslug || !themeslug) {
+  throw new Error("Missing slugs params");
+}
+
+const QUERY = `*[
+  _type == "collage" &&
+  slug.current == $collageslug
+][0]{
+  _id,
+  title,
+  slug,
+  year,
+  body,
+  theme->{
+    title,
+    slug
+  },
+  image{
+    asset->{
+      _id,
+      url,
+      metadata{
+        dimensions
+      }
+    }
+  }
+}`;
+
+const collage = await sanityClient.fetch<SanityDocument>(QUERY, {
+  collageslug,
+});
+
+if (!collage) {
+  return Astro.redirect("/404");
+}
+---
+
+<Base title={collage.title}>
+  <Breadcrumbs
+    links={[
+      { label: "ARTWORK", href: "/" },
+      { label: "DIGITAL COLLAGES", href: "/digital-collages" },
+      {
+        label: collage.theme.title,
+        href: `/digital-collages/theme/${collage.theme.slug.current}`,
+      },
+    ]}
+    current={collage.title}
+  />
+  <div class="container">
+    <Artwork
+      title={collage.title}
+      imageUrl={collage.image.asset.url}
+      width={collage.image.asset.metadata.dimensions.width}
+      height={collage.image.asset.metadata.dimensions.height}
+    >
+      <div>Year: {collage.year}</div>
+      {collage.body && <Body value={collage.body} />}
+    </Artwork>
+  </div>
+</Base>
+
+<style>
+  .container {
+    margin-top: 2.5rem;
+  }
+</style>
