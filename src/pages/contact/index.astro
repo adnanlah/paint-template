@@ -7,7 +7,6 @@ import { urlFor } from "../../scripts/helpers";
 import ContactForm from "../../components/ContactForm.astro";
 import Title from "../../components/Title.astro";
 
-
 const QUERY = `*[
   _type == "about"
 ]|{_id, email, address, instagram, facebook, contactImage{
@@ -25,8 +24,8 @@ const QUERY = `*[
 const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
-<Base>
-    <Title content="CONTACT ME"/>
+<Base title="Contact">
+    <Title content="CONTACT ME" />
     <section class="container">
         <Image
             src={urlFor(about[0].contactImage.asset.url)
@@ -63,12 +62,12 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
 
 <style>
     .container {
-        width: 75%;
+        width: 100%;
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 5rem;
         align-items: start;
-        margin: 2.5rem auto 0 auto;
+        margin-top: 2.5rem;
     }
 
     .image {

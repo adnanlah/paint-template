@@ -25,8 +25,8 @@ const QUERY = `*[
 const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
 ---
 
-<Base>
-    <Title content="ABOUT ME"/>
+<Base title="About">
+    <Title content="ABOUT ME" />
     <section class="container">
         <Image
             src={urlFor(about[0].aboutImage.asset.url)
@@ -68,12 +68,12 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
 
 <style>
     .container {
-        width: 75%;
+        width: 100%;
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 5rem;
         align-items: start;
-        margin: 2.5rem auto 0 auto;
+        margin-top: 2.5rem;
     }
 
     .image {

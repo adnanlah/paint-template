@@ -40,7 +40,7 @@ const { title } = Astro.props;
 
 	:root {
 		--primary-color: #000;
-		--secondary-color: #999;
+		--secondary-color: #8f8f8f;
 		--background-color: #fcfcfc;
 	}
 
@@ -66,39 +66,15 @@ const { title } = Astro.props;
 		position: relative;
 	}
 
-	/* a.styledLink::after {
-		content: "";
-		position: absolute;
-		left: 0;
-		bottom: -3px;
-		width: 0;
-		height: 2.5px;
-		background-color: currentColor;
-		transition: width 0.3s ease;
-	}
-
-	a.styledLink.active::after {
-		width: 100%;
-	}
-
-	a.styledLink:hover::after {
-		width: 100%;
-	} */
-
 	a.styledLink {
-		/* transition: all 0.1s ease-in-out; */
+		color: var(--secondary-color);
 	}
 
 	a.styledLink.active,
 	a.styledLink:hover {
 		color: #000 !important;
-		font-weight: 600;
+		text-shadow: 0 0 0.5px currentColor;
 	}
-
-	/* a.styledLink:hover {
-		color: #000;
-		font-weight: 600;
-	} */
 
 	a.styledImage {
 		display: block;
