@@ -1,5 +1,4 @@
 ---
-const currentPath = Astro.url.pathname;
 import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 
@@ -8,6 +7,10 @@ const QUERY = `*[
 ]|{instagram}`;
 
 const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
+
+const rawPath = Astro.url.pathname;
+const currentPath =
+    rawPath.endsWith("/") && rawPath !== "/" ? rawPath.slice(0, -1) : rawPath;
 ---
 
 <div class={"container"}>
