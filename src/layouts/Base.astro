@@ -1,4 +1,5 @@
 ---
+import Container from "../components/Container.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import Layout from "../layouts/Layout.astro";
@@ -14,11 +15,13 @@ const { title } = Astro.props;
 	<div class="container">
 		<div>
 			<Header />
-			<main>
+			<main class="wrapper">
 				<slot />
 			</main>
 		</div>
-		<Footer />
+		<div class="wrapper">
+			<Footer />
+		</div>
 	</div>
 </Layout>
 
@@ -27,11 +30,5 @@ const { title } = Astro.props;
 		display: grid;
 		grid-template-rows: 1fr auto;
 		min-height: 100vh;
-	}
-
-	main {
-		max-width: 2400px;
-		margin: 0 auto;
-		padding: 0 7.5rem;
 	}
 </style>

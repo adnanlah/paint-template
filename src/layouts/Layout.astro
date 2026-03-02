@@ -55,7 +55,7 @@ const { title } = Astro.props;
 		padding: 0;
 		width: 100%;
 		background: var(--background-color);
-		overflow-x: hidden;
+		/* overflow-x: hidden; */
 	}
 
 	a,
@@ -125,5 +125,34 @@ const { title } = Astro.props;
 
 	.clickableImage.right:hover {
 		transform: translateX(0.5rem);
+	}
+
+	.wrapper {
+		padding: 0 10rem;
+		max-width: 2400px;
+	}
+
+	@media screen and (max-width: 1200px) {
+		.wrapper {
+			padding: 0 5rem;
+		}
+	}
+
+	@media screen and (max-width: 768px) {
+		html,
+		body {
+			font-size: 12px;
+		}
+
+		.wrapper {
+			padding: 0 2.5rem;
+		}
+	}
+
+	@media screen and (max-width: 480px) {
+		html,
+		body {
+			font-size: 10px;
+		}
 	}
 </style>

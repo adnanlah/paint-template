@@ -13,7 +13,7 @@ const currentPath =
     rawPath.endsWith("/") && rawPath !== "/" ? rawPath.slice(0, -1) : rawPath;
 ---
 
-<div class={"container"}>
+<div class:list={["container", "wrapper"]}>
     <a href="/" class={"logoContainer"} aria-label="Home"></a>
     <div class={"nav"}>
         <a
@@ -69,7 +69,7 @@ const currentPath =
 <style>
     .container {
         font-size: 1rem;
-        padding: 5rem 7.5rem 2.5rem 7.5rem;
+        margin: 5rem 0 2.5rem;
         font-weight: 500;
         display: flex;
         justify-content: space-between;
@@ -79,6 +79,7 @@ const currentPath =
     a.logoContainer {
         display: block;
         width: 7.5rem;
+        min-width: 7.5rem;
         aspect-ratio: 797 / 368;
         background-image: url("/logo.svg");
         background-repeat: no-repeat;
@@ -119,21 +120,6 @@ const currentPath =
         color: var(--secondary-color);
     }
 
-    /* .nav .icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 2.5rem;
-        height: 2.5rem;
-        border-radius: 0.5rem;
-        background-color: transparent;
-        color: currentColor;
-        transition:
-            background-color 0.3s ease,
-            color 0.3s ease,
-            transform 0.3s ease;
-    } */
-
     .nav a {
         color: inherit;
     }
@@ -151,12 +137,9 @@ const currentPath =
         height: 1.5rem;
     }
 
-    /* .nav .icon::after {
-        display: none;
+    @media screen and (max-width: 768px) {
+        .nav {
+            gap: 1rem;
+        }
     }
-
-    .nav .icon:hover {
-        background-color: #000;
-        color: #fff;
-    } */
 </style>

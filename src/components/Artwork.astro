@@ -56,6 +56,12 @@ const { title, imageUrl, width, height } = Astro.props;
         align-items: start;
         gap: 1rem;
     }
+
+    @media screen and (max-width: 480px) {
+        .artwork {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 <script>

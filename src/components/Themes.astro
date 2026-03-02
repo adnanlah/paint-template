@@ -75,4 +75,11 @@ const { paintingThemes } = Astro.props as {
         gap: 2.5rem;
         text-transform: uppercase;
     }
+
+    @media screen and (max-width: 768px) {
+        .container {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+        }
+    }
 </style>

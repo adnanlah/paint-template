@@ -2,15 +2,15 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import HeroImage from "../components/HeroImage.astro";
-import Email from "../components/Email.astro";
+import Intro from "../components/Intro.astro";
 ---
 
 <Layout title="PORTFOLIO">
 	<div class={"hero"}>
 		<Header />
-		<div class={"gallery"}>
+		<div class:list={["content", "wrapper"]}>
 			<HeroImage />
-			<Email />
+			<Intro />
 		</div>
 	</div>
 </Layout>
@@ -22,14 +22,14 @@ import Email from "../components/Email.astro";
 		flex-direction: column;
 	}
 
-	.gallery {
+	.content {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
 		height: 100%;
 	}
 
-	.gallery > * {
+	.content > * {
 		flex: 1;
 	}
 </style>

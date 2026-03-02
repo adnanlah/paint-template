@@ -51,4 +51,10 @@ const { title, url, imageUrl, width, height } = Astro.props;
         justify-self: stretch;
         gap: 1rem;
     }
+
+    @media screen and (max-width: 768px) {
+        .artwork .info {
+            gap: 0.5rem;
+        }
+    }
 </style>
