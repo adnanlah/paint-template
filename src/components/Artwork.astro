@@ -1,0 +1,144 @@
+---
+import { Image } from "astro:assets";
+import { urlFor } from "../scripts/helpers";
+
+interface Props {
+    title: string;
+    imageUrl: string;
+    width: number;
+    height: number;
+}
+
+const { title, imageUrl, width, height } = Astro.props;
+---
+
+<div class="artwork">
+    <div class="image-container">
+        <Image
+            src={urlFor(imageUrl).width(800).format("webp").url()}
+            alt={title}
+            width={800}
+            height={Math.round((height / width) * 800)}
+            class="image"
+            data-highres={urlFor(imageUrl).width(2400).format("webp").url()}
+        />
+    </div>
+
+    <div class="info">
+        <h2>{title}</h2>
+        <slot />
+    </div>
+</div>
+
+<style>
+    .artwork {
+        display: grid;
+        grid-template-columns: 40% 1fr;
+        gap: 2.5rem;
+        align-items: end;
+    }
+
+    .image-container {
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .image {
+        width: 100%;
+        height: auto;
+        transition: transform 0.3s ease-out;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap: 1rem;
+    }
+</style>
+
+<script>
+    const modal = document.getElementById(
+        "my-modal",
+    ) as HTMLDialogElement | null;
+    const openBtn = document.getElementById(
+        "open-modal",
+    ) as HTMLButtonElement | null;
+    const closeBtn = document.getElementById(
+        "close-modal",
+    ) as HTMLButtonElement | null;
+
+    if (openBtn && modal) {
+        openBtn.addEventListener("click", () => {
+            modal.showModal();
+        });
+    }
+
+    if (closeBtn && modal) {
+        closeBtn.addEventListener("click", () => {
+            modal.close();
+        });
+    }
+
+    if (modal) {
+        modal.addEventListener("click", (e) => {
+            const rect = modal.getBoundingClientRect();
+            const clickedOutside =
+                e.clientX < rect.left ||
+                e.clientX > rect.right ||
+                e.clientY < rect.top ||
+                e.clientY > rect.bottom;
+
+            if (clickedOutside) modal.close();
+        });
+    }
+
+    const imageContainer = document.querySelector(
+        ".image-container",
+    ) as HTMLDivElement | null;
+    const image = document.querySelector(".image") as HTMLImageElement | null;
+
+    if (imageContainer && image) {
+        let highResLoaded = false;
+
+        imageContainer.addEventListener("mouseenter", () => {
+            if (!highResLoaded && image.dataset.highres) {
+                const highResUrl = image.dataset.highres;
+                const tempImg = new window.Image();
+                tempImg.onload = () => {
+                    image.src = highResUrl;
+                    if (image.srcset) {
+                        image.removeAttribute("srcset");
+                    }
+                    highResLoaded = true;
+                };
+                tempImg.src = highResUrl;
+            }
+        });
+
+        imageContainer.addEventListener("mousemove", (e) => {
+            const rect = imageContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const xPercent = (x / rect.width) * 100;
+            const yPercent = (y / rect.height) * 100;
+
+            // Calculate scale to exactly match the loaded natural size relative to display size
+            const targetWidth = image.dataset.highres
+                ? 2400
+                : image.naturalWidth;
+            const scale = targetWidth ? targetWidth / rect.width : 2.5;
+            const finalScale = Math.max(1.5, scale); // Minimum 1.5x zoom if source is small
+
+            image.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+            image.style.transform = `scale(${finalScale})`;
+        });
+
+        imageContainer.addEventListener("mouseleave", () => {
+            // image.style.transformOrigin = "center center";
+            image.style.transform = "scale(1)";
+        });
+    }
+</script>

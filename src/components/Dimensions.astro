@@ -1,0 +1,39 @@
+---
+interface Props {
+    width: number;
+    height: number;
+}
+
+const { width, height } = Astro.props;
+---
+
+<div class="dimensions">
+    {width}cm
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        class="size-6"
+    >
+        <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"></path>
+    </svg>
+    {height}cm
+</div>
+
+<style>
+    .dimensions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .dimensions svg {
+        width: 0.75rem;
+        height: 0.75rem;
+    }
+</style>

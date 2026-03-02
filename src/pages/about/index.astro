@@ -2,11 +2,12 @@
 import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import Base from "../../layouts/Base.astro";
-import { PortableText } from "astro-portabletext";
+import MyPortableText from "../../components/Body.astro";
 import { Image } from "astro:assets";
 import Download from "../../components/Download.astro";
 import Title from "../../components/Title.astro";
 import { urlFor } from "../../scripts/helpers";
+import Body from "../../components/Body.astro";
 
 const QUERY = `*[
   _type == "about"
@@ -42,8 +43,8 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
             alt="About image"
             class="image"
         />
-        <div class="body">
-            <PortableText value={about[0].aboutText} />
+        <div class="content">
+            <Body value={about[0].aboutText} />
 
             <div class="downloads">
                 Collections: <Download
@@ -81,7 +82,7 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
         height: auto;
     }
 
-    .body {
+    .content {
         display: flex;
         flex-direction: column;
         gap: 1rem;

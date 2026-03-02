@@ -1,13 +1,13 @@
 ---
 import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
-import { PortableText } from "astro-portabletext";
-import { Image } from "astro:assets";
 import MainButton from "../../../../components/MainButton.astro";
 import InquireModal from "../../../../components/InquireModal.astro";
-import { urlFor } from "../../../../scripts/helpers";
 import Breadcrumbs from "../../../../components/Breadcrumbs.astro";
 import Base from "../../../../layouts/Base.astro";
+import PaintingDetails from "../../../../components/PaintingDetails.astro";
+import Body from "../../../../components/Body.astro";
+import Artwork from "../../../../components/Artwork.astro";
 
 export async function getStaticPaths() {
   const slugs = await sanityClient.fetch(`
@@ -71,156 +71,70 @@ if (!painting) {
 ---
 
 <Base title={painting.title}>
-  <div>
-    <InquireModal id="my-modal" slug={paintingslug} />
-    <Breadcrumbs
-      links={[
-        { label: "ARTWORK", href: "/" },
-        { label: "PAINTINGS", href: "/paintings" },
-        {
-          label: painting.theme.title,
-          href: `/paintings/theme/${painting.theme.slug.current}`,
-        },
-      ]}
-      current={painting.title}
-    />
-    <div class="container">
-      <div class="image-container">
-        <Image
-          src={urlFor(painting.image.asset.url).width(800).format("webp").url()}
-          alt={painting.title}
-          width={2400}
-          height={Math.round(
-            (painting.image.asset.metadata.dimensions.height /
-              painting.image.asset.metadata.dimensions.width) *
-              2400,
-          )}
-          class="image"
-          data-highres={urlFor(painting.image.asset.url)
-            .width(2400)
-            .format("webp")
-            .url()}
-        />
-      </div>
+  <InquireModal id="my-modal" slug={paintingslug} />
+  <Breadcrumbs
+    links={[
+      { label: "ARTWORK", href: "/" },
+      { label: "PAINTINGS", href: "/paintings" },
+      {
+        label: painting.theme.title,
+        href: `/paintings/theme/${painting.theme.slug.current}`,
+      },
+    ]}
+    current={painting.title}
+  />
+  <div class="container">
+    <Artwork
+      title={painting.title}
+      imageUrl={painting.image.asset.url}
+      width={painting.image.asset.metadata.dimensions.width}
+      height={painting.image.asset.metadata.dimensions.height}
+    >
+      <PaintingDetails
+        painting={{
+          year: painting.year,
+          width: painting.width,
+          height: painting.height,
+          medium: painting.medium,
+        }}
+      />
+      <Body value={painting.body} />
 
-      <div class="info">
-        <h2>{painting.title}</h2>
-        <div class="details">
-          {painting.year} • <div class="dimensions">
-            {painting.width}mm
+      {
+        !painting.available && (
+          <div class="not-available">
+            <div>Not available!</div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              stroke-width="2"
+              stroke-width="1.5"
               stroke="currentColor"
               class="size-6"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M6 18 18 6M6 6l12 12"></path>
+                d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
+              />
             </svg>
-            {painting.height}mm
-          </div> • {painting.medium}
-        </div>
-        <div class="body">
-          <PortableText value={painting.body} />
-        </div>
-
-        {
-          !painting.available && (
-            <div class="not-available">
-              <div>Not available!</div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
-                />
-              </svg>
-            </div>
-          )
-        }
-        {
-          painting.available && (
-            <MainButton id="open-modal" data-slug={paintingslug}>
-              Inquire
-            </MainButton>
-          )
-        }
-      </div>
-    </div>
+          </div>
+        )
+      }
+      {
+        painting.available && (
+          <MainButton id="open-modal" data-slug={paintingslug}>
+            Inquire
+          </MainButton>
+        )
+      }
+    </Artwork>
   </div>
 </Base>
 
 <style>
   .container {
     margin-top: 2.5rem;
-    display: grid;
-    grid-template-columns: 40% 1fr;
-    gap: 2.5rem;
-    align-items: end;
-  }
-
-  /* .button-container {
-    width: 100%;
-    display: flex;
-    justify-content: end;
-  } */
-
-  .details,
-  .dimensions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .dimensions svg {
-    width: 0.75rem;
-    height: 0.75rem;
-  }
-
-  .title {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .title svg {
-    width: 1rem;
-    height: 1rem;
-  }
-
-  .image-container {
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .image {
-    width: 100%;
-    height: auto;
-    transition: transform 0.3s ease-out;
-  }
-
-  .info {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    gap: 1rem;
-  }
-
-  .info > .body {
-    text-align: left;
-    line-height: 1.5;
   }
 
   .not-available {
@@ -236,84 +150,3 @@ if (!painting) {
     height: 1.5rem;
   }
 </style>
-
-<script>
-  const modal = document.getElementById("my-modal") as HTMLDialogElement | null;
-  const openBtn = document.getElementById(
-    "open-modal",
-  ) as HTMLButtonElement | null;
-  const closeBtn = document.getElementById(
-    "close-modal",
-  ) as HTMLButtonElement | null;
-
-  if (openBtn && modal) {
-    openBtn.addEventListener("click", () => {
-      modal.showModal();
-    });
-  }
-
-  if (closeBtn && modal) {
-    closeBtn.addEventListener("click", () => {
-      modal.close();
-    });
-  }
-
-  if (modal) {
-    modal.addEventListener("click", (e) => {
-      const rect = modal.getBoundingClientRect();
-      const clickedOutside =
-        e.clientX < rect.left ||
-        e.clientX > rect.right ||
-        e.clientY < rect.top ||
-        e.clientY > rect.bottom;
-
-      if (clickedOutside) modal.close();
-    });
-  }
-
-  const imageContainer = document.querySelector(
-    ".image-container",
-  ) as HTMLDivElement | null;
-  const image = document.querySelector(".image") as HTMLImageElement | null;
-
-  if (imageContainer && image) {
-    let highResLoaded = false;
-
-    imageContainer.addEventListener("mouseenter", () => {
-      if (!highResLoaded && image.dataset.highres) {
-        const highResUrl = image.dataset.highres;
-        const tempImg = new window.Image();
-        tempImg.onload = () => {
-          image.src = highResUrl;
-          if (image.srcset) {
-            image.removeAttribute("srcset");
-          }
-          highResLoaded = true;
-        };
-        tempImg.src = highResUrl;
-      }
-    });
-
-    imageContainer.addEventListener("mousemove", (e) => {
-      const rect = imageContainer.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      const xPercent = (x / rect.width) * 100;
-      const yPercent = (y / rect.height) * 100;
-
-      // Calculate scale to exactly match the loaded natural size relative to display size
-      const targetWidth = image.dataset.highres ? 2400 : image.naturalWidth;
-      const scale = targetWidth ? targetWidth / rect.width : 2.5;
-      const finalScale = Math.max(1.5, scale); // Minimum 1.5x zoom if source is small
-
-      image.style.transformOrigin = `${xPercent}% ${yPercent}%`;
-      image.style.transform = `scale(${finalScale})`;
-    });
-
-    imageContainer.addEventListener("mouseleave", () => {
-      // image.style.transformOrigin = "center center";
-      image.style.transform = "scale(1)";
-    });
-  }
-</script>

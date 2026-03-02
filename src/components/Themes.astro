@@ -14,7 +14,7 @@ const { paintingThemes } = Astro.props as {
 };
 ---
 
-<div class={"themes"}>
+<div class={"container"}>
     {
         paintingThemes.map((theme) => (
             <div class:list={["theme"]}>
@@ -43,7 +43,7 @@ const { paintingThemes } = Astro.props as {
 </div>
 
 <style>
-    .themes {
+    .container {
         margin-top: 2.5rem;
         display: grid;
         grid-template-columns: repeat(3, 1fr);

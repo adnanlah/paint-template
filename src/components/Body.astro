@@ -1,0 +1,20 @@
+---
+import type { TypedObject } from "@portabletext/types";
+import { PortableText } from "astro-portabletext";
+
+interface Props {
+    value: TypedObject | TypedObject[];
+}
+
+const { value } = Astro.props;
+---
+
+<div class="body">
+    <PortableText value={value} />
+</div>
+
+<style>
+    .body {
+        line-height: 1.6;
+    }
+</style>

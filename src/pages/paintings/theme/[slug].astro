@@ -2,10 +2,13 @@
 import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import Base from "../../../layouts/Base.astro";
-import { Image } from "astro:assets";
-import { urlFor } from "../../../scripts/helpers";
-import { PortableText } from "astro-portabletext";
+
 import Breadcrumbs from "../../../components/Breadcrumbs.astro";
+import ThemeImage from "../../../components/ThemeImage.astro";
+import { PortableText } from "astro-portabletext";
+import Dimensions from "../../../components/Dimensions.astro";
+import Body from "../../../components/Body.astro";
+import PaintingDetails from "../../../components/PaintingDetails.astro";
 
 export async function getStaticPaths() {
     const slugs = await sanityClient.fetch(`
@@ -67,7 +70,7 @@ if (!theme) {
 ---
 
 <Base title={theme.title}>
-    <div class={"container"}>
+    <div>
         <Breadcrumbs
             links={[
                 { label: "ARTWORK", href: "/" },
@@ -75,65 +78,26 @@ if (!theme) {
             ]}
             current={theme.title}
         />
-        <div class={"paintings"}>
+        <div class="container">
             {
                 paintings.map((painting) => (
-                    <div class={"painting"}>
-                        <a
-                            href={`/paintings/theme/${slug}/${painting.slug.current}`}
-                            class="styledImage"
-                        >
-                            <Image
-                                src={urlFor(painting.image.asset.url)
-                                    .width(1000)
-                                    .format("webp")
-                                    .url()}
-                                alt={painting.title}
-                                width={1000}
-                                height={Math.round(
-                                    (painting.image.asset.metadata.dimensions
-                                        .height /
-                                        painting.image.asset.metadata.dimensions
-                                            .width) *
-                                        1000,
-                                )}
-                                class="image"
-                            />
-                        </a>
-                        <div class="info">
-                            <a
-                                href={`/paintings/theme/${slug}/${painting.slug.current}`}
-                                class="styledLink"
-                            >
-                                <h2>{painting.title}</h2>
-                            </a>
-                            <div class="details">
-                                {painting.year} •{" "}
-                                <div class="dimensions">
-                                    {painting.width}mm
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="2"
-                                        stroke="currentColor"
-                                        class="size-6"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M6 18 18 6M6 6l12 12"
-                                        />
-                                    </svg>
-                                    {painting.height}mm
-                                </div>{" "}
-                                • {painting.medium}
-                            </div>
-                            <div class="body">
-                                <PortableText value={painting.body} />
-                            </div>
-                        </div>
-                    </div>
+                    <ThemeImage
+                        title={painting.title}
+                        imageUrl={painting.image.asset.url}
+                        url={`/paintings/theme/${slug}/${painting.slug.current}`}
+                        width={painting.image.asset.metadata.dimensions.width}
+                        height={painting.image.asset.metadata.dimensions.height}
+                    >
+                        <PaintingDetails
+                            painting={{
+                                year: painting.year,
+                                width: painting.width,
+                                height: painting.height,
+                                medium: painting.medium,
+                            }}
+                        />
+                        <Body value={painting.body} />
+                    </ThemeImage>
                 ))
             }
         </div>
@@ -141,46 +105,10 @@ if (!theme) {
 </Base>
 
 <style>
-    .paintings {
+    .container {
         margin-top: 2.5rem;
         display: flex;
         flex-direction: column;
-        gap: 5rem;
-    }
-
-    .details,
-    .dimensions {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .dimensions svg {
-        width: 0.75rem;
-        height: 0.75rem;
-    }
-
-    .painting {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 40% 1fr;
-        align-items: end;
         gap: 2.5rem;
-    }
-
-    .painting .image {
-        width: 100%;
-        height: auto;
-    }
-
-    .painting .info {
-        display: flex;
-        flex-direction: column;
-        justify-self: stretch;
-        gap: 1rem;
-    }
-
-    .body {
-        line-height: 1.5;
     }
 </style>

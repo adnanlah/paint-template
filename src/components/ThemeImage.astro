@@ -1,0 +1,54 @@
+---
+import { Image } from "astro:assets";
+import { urlFor } from "../scripts/helpers";
+
+interface Props {
+    title: string;
+    url: string;
+    imageUrl: string;
+    width: number;
+    height: number;
+}
+
+const { title, url, imageUrl, width, height } = Astro.props;
+---
+
+<div class={"artwork"}>
+    <a href={url} class="styledImage">
+        <Image
+            src={urlFor(imageUrl).width(1000).format("webp").url()}
+            alt={title}
+            width={1000}
+            height={Math.round((height / width) * 1000)}
+            class="image"
+        />
+    </a>
+    <div class="info">
+        <a href={url}>
+            <h2>{title}</h2>
+        </a>
+        <slot />
+    </div>
+</div>
+
+<style>
+    .artwork {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 40% 1fr;
+        align-items: end;
+        gap: 2.5rem;
+    }
+
+    .artwork .image {
+        width: 100%;
+        height: auto;
+    }
+
+    .artwork .info {
+        display: flex;
+        flex-direction: column;
+        justify-self: stretch;
+        gap: 1rem;
+    }
+</style>

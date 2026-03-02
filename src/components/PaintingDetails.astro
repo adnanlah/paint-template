@@ -1,0 +1,30 @@
+---
+import Dimensions from "./Dimensions.astro";
+
+interface Props {
+    painting: {
+        year: string;
+        width: number;
+        height: number;
+        medium: string;
+    };
+}
+
+const { painting } = Astro.props;
+---
+
+<div class="details">
+    <div>{painting.year}</div>
+    <div>•</div>
+    <Dimensions width={painting.width} height={painting.height} />
+    <div>•</div>
+    <div>{painting.medium}</div>
+</div>
+
+<style>
+    .details {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+</style>
