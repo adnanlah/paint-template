@@ -6,6 +6,7 @@ import { Image } from "astro:assets";
 import { urlFor } from "../../scripts/helpers";
 import ContactForm from "../../components/ContactForm.astro";
 import Title from "../../components/Title.astro";
+import Socials from "../../components/Socials.astro";
 
 const QUERY = `*[
   _type == "about"
@@ -42,19 +43,21 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
             class="image"
         />
         <div class="body">
-            <p>You can reach me at:</p>
-            <p>{about[0].email}</p>
-            <p>+213 666 666 666</p>
-            <p>
-                LinkedIn: <a href={about[0].linkedin}></a>
-            </p>
-            <p>
-                Instagram: <a href={about[0].instagram}></a>
-            </p>
-            <p>
-                Facebook: <a href={about[0].facebook}></a>
-            </p>
-
+            <p>You can drop me a line at:</p>
+            <a href={`mailto:${about[0].email}`}>
+                {about[0].email.split("@")[0]}<b
+                    >@{about[0].email.split("@")[1]}</b
+                >
+            </a>
+            <div>You can also follow me on socials:</div>
+            <Socials
+                instagram={about[0].instagram}
+                facebook={about[0].facebook}
+                linkedin={about[0].linkedin}
+                behance={about[0].behance}
+                phone={about[0].phone}
+            />
+            <p>Or you can fill the form below:</p>
             <ContactForm />
         </div>
     </section>
@@ -65,7 +68,7 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
         width: 100%;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 5rem;
+        gap: 2.5rem;
         align-items: start;
         margin-top: 2.5rem;
     }

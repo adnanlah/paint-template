@@ -1,0 +1,55 @@
+---
+import WhatsappIcon from "./icons/WhatsappIcon.astro";
+import FacebookIcon from "./icons/FacebookIcon.astro";
+import LinkedinIcon from "./icons/LinkedinIcon.astro";
+import BehanceIcon from "./icons/BehanceIcon.astro";
+import InstagramIcon from "./icons/InstagramIcon.astro";
+
+const { instagram, facebook, linkedin, behance } = Astro.props;
+---
+
+<div>
+    <a href={instagram} target="_blank" rel="noopener noreferrer">
+        <InstagramIcon />
+    </a>
+    <a href={facebook} target="_blank" rel="noopener noreferrer">
+        <FacebookIcon />
+    </a>
+    {
+        linkedin && (
+            <a href={linkedin} target="_blank" rel="noopener noreferrer">
+                <LinkedinIcon />
+            </a>
+        )
+    }
+    {
+        behance && (
+            <a href={behance} target="_blank" rel="noopener noreferrer">
+                <BehanceIcon />
+            </a>
+        )
+    }
+</div>
+
+<style>
+    div {
+        color: var(--secondary-color);
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    div a {
+        width: 2rem;
+        height: 2rem;
+        color: currentColor;
+    }
+
+    div a:hover {
+        color: black;
+    }
+
+    div a svg {
+        color: currentColor;
+    }
+</style>

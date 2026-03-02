@@ -14,15 +14,23 @@ const { painting } = Astro.props;
 ---
 
 <div class="details">
-    <div>{painting.year}</div>
-    <div>•</div>
-    <Dimensions width={painting.width} height={painting.height} />
-    <div>•</div>
-    <div>{painting.medium}</div>
+    <div class="dim">
+        <b>Dimensions:</b>
+        <Dimensions width={painting.width} height={painting.height} />
+    </div>
+    <div><b>Medium:</b> {painting.medium}</div>
+    <div><b>Year:</b> {painting.year}</div>
 </div>
 
 <style>
     .details {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        gap: 0.5rem;
+    }
+
+    .dim {
         display: flex;
         align-items: center;
         gap: 0.5rem;
