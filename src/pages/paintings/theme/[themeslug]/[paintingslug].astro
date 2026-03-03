@@ -17,12 +17,14 @@ export async function getStaticPaths() {
     }
   `);
 
-  return slugs.map((s: { slug: any; themeslug: any }) => ({
-    params: {
-      paintingslug: s.slug,
-      themeslug: s.themeslug,
-    },
-  }));
+  return slugs
+    .filter((s: { slug: any; themeslug: any }) => s.slug && s.themeslug)
+    .map((s: { slug: any; themeslug: any }) => ({
+      params: {
+        paintingslug: s.slug,
+        themeslug: s.themeslug,
+      },
+    }));
 }
 
 const { paintingslug, themeslug } = Astro.params;
