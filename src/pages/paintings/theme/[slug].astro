@@ -83,7 +83,9 @@ if (!paintings) {
                                 medium: painting.medium,
                             }}
                         />
-                        <Body value={painting.body} />
+                        <div class="body">
+                            {painting.body && <Body value={painting.body} />}
+                        </div>
                     </ThemeImage>
                 ))
             }
@@ -97,5 +99,11 @@ if (!paintings) {
         display: flex;
         flex-direction: column;
         gap: 2.5rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        .body {
+            display: none;
+        }
     }
 </style>

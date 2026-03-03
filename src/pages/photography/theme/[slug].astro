@@ -76,7 +76,11 @@ if (!photography) {
                         <div>
                             <b>Year:</b> {photography.year}
                         </div>
-                        {photography.body && <Body value={photography.body} />}
+                        <div class="body">
+                            {photography.body && (
+                                <Body value={photography.body} />
+                            )}
+                        </div>
                     </ThemeImage>
                 ))
             }
@@ -90,5 +94,11 @@ if (!photography) {
         display: flex;
         flex-direction: column;
         gap: 2.5rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        .body {
+            display: none;
+        }
     }
 </style>

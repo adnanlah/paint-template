@@ -77,9 +77,11 @@ if (!digitalCollages) {
                         <div>
                             <b>Year:</b> {digitalCollage.year}
                         </div>
-                        {digitalCollage.body && (
-                            <Body value={digitalCollage.body} />
-                        )}
+                        <div class="body">
+                            {digitalCollage.body && (
+                                <Body value={digitalCollage.body} />
+                            )}
+                        </div>
                     </ThemeImage>
                 ))
             }
@@ -93,5 +95,11 @@ if (!digitalCollages) {
         display: flex;
         flex-direction: column;
         gap: 2.5rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        .body {
+            display: none;
+        }
     }
 </style>
