@@ -18,9 +18,7 @@ const QUERY = `*[
       metadata{
         dimensions
       }
-    },
-    crop,
-    hotspot
+    }
   }}`;
 
 const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
@@ -31,14 +29,14 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
     <section class="container">
         <Image
             src={urlFor(about[0].aboutImage.asset.url)
-                .width(800)
+                .width(1200)
                 .format("webp")
                 .url()}
-            width={800}
+            width={1200}
             height={Math.round(
                 (about[0].aboutImage.asset.metadata.dimensions.height /
                     about[0].aboutImage.asset.metadata.dimensions.width) *
-                    800,
+                    1200,
             )}
             alt="About image"
             class="image"
@@ -98,7 +96,8 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
 
     @media screen and (max-width: 1000px) {
         .container {
-            gap: 2.5rem;
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
     }
 </style>

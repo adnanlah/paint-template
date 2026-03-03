@@ -17,9 +17,7 @@ const QUERY = `*[
       metadata{
         dimensions
       }
-    },
-    crop,
-    hotspot
+    }
   }}`;
 
 const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
@@ -85,16 +83,10 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
         line-height: 1.5;
     }
 
-    .downloads {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-grow: 1;
-    }
-
     @media screen and (max-width: 1000px) {
         .container {
-            gap: 2.5rem;
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
     }
 </style>
