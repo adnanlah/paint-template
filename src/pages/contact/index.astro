@@ -28,16 +28,16 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
     <section class="container">
         <Image
             src={urlFor(about[0].contactImage.asset.url)
-                .width(800)
+                .width(1200)
                 .format("webp")
                 .url()}
-            width={800}
+            width={1200}
             height={Math.round(
                 (about[0].contactImage.asset.metadata.dimensions.height /
                     about[0].contactImage.asset.metadata.dimensions.width) *
-                    800,
+                    1200,
             )}
-            alt="About me image"
+            alt="Contact me image"
             class="image"
         />
         <div class="body">
@@ -55,7 +55,7 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
                 behance={about[0].behance}
                 phone={about[0].phone}
             />
-            <p>Or you can fill the form below:</p>
+            <p>You can reach me out using the form below:</p>
             <ContactForm />
         </div>
     </section>
