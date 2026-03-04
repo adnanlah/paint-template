@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { AutoSlugInput } from '../components/AutoSlugInput'
 
 export const paintingType = defineType({
     name: 'painting',
@@ -45,11 +46,19 @@ export const paintingType = defineType({
         defineField({
             name: 'slug',
             type: 'slug',
+            components: { input: AutoSlugInput },
             options: {
-                source: (doc) => `${doc.title}-${doc.year}`,
+                source: 'title',
                 maxLength: 96,
+                slugify: (input: string) =>
+                    input
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, '-')
+                        .replace(/[^\w-]+/g, '')
+                        .replace(/--+/g, '-'),
             },
-            validation: (rule) => rule.required(),
+            validation: Rule => Rule.required(),
         }),
         defineField({
             name: 'publishedAt',

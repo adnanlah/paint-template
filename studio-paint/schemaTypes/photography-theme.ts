@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { AutoSlugInput } from '../components/AutoSlugInput'
 
 export const photographyThemeType = defineType({
     name: 'photographyTheme',
@@ -13,7 +14,19 @@ export const photographyThemeType = defineType({
         defineField({
             name: 'slug',
             type: 'slug',
-            options: { source: 'title' }
+            components: { input: AutoSlugInput },
+            options: {
+                source: 'title',
+                maxLength: 96,
+                slugify: (input: string) =>
+                    input
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, '-')
+                        .replace(/[^\w-]+/g, '')
+                        .replace(/--+/g, '-'),
+            },
+            validation: Rule => Rule.required(),
         }),
         defineField({
             name: 'body',
