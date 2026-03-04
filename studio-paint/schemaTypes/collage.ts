@@ -25,6 +25,7 @@ export const collageType = defineType({
         defineField({
             name: 'slug',
             type: 'slug',
+            hidden: true,
             components: { input: AutoSlugInput },
             options: {
                 source: 'title',
