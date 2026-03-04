@@ -45,7 +45,7 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY, {
     slug,
 });
 
-if (!photography) {
+if (!photography || photography.length === 0) {
     return Astro.redirect("/404");
 }
 ---

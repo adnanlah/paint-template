@@ -5,8 +5,6 @@ import Base from "../../../layouts/Base.astro";
 
 import Breadcrumbs from "../../../components/Breadcrumbs.astro";
 import ThemeImage from "../../../components/ThemeImage.astro";
-import { PortableText } from "astro-portabletext";
-import Dimensions from "../../../components/Dimensions.astro";
 import Body from "../../../components/Body.astro";
 import PaintingDetails from "../../../components/PaintingDetails.astro";
 
@@ -51,7 +49,7 @@ const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY, {
     slug,
 });
 
-if (!paintings) {
+if (!paintings || paintings.length === 0) {
     return Astro.redirect("/404");
 }
 ---

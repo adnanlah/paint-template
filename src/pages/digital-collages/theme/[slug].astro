@@ -45,7 +45,7 @@ const digitalCollages = await sanityClient.fetch<SanityDocument[]>(QUERY, {
     slug,
 });
 
-if (!digitalCollages) {
+if (!digitalCollages || digitalCollages.length === 0) {
     return Astro.redirect("/404");
 }
 ---
