@@ -59,19 +59,23 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY3);
 <section class={"container"}>
   <div class="type">
     <a href="/paintings" class="styledImage">
-      <Image
-        src={urlFor(paintings[0].image.asset.url)
-          .width(600)
-          .format("webp")
-          .url()}
-        width={600}
-        height={Math.round(
-          (paintings[0].image.asset.metadata.dimensions.height /
-            paintings[0].image.asset.metadata.dimensions.width) *
-            600,
-        )}
-        alt={paintings[0].title}
-      />
+      {paintings?.[0]?.image ? (
+        <Image
+          src={urlFor(paintings[0].image.asset.url)
+            .width(600)
+            .format("webp")
+            .url()}
+          width={600}
+          height={Math.round(
+            (paintings[0].image.asset.metadata.dimensions.height /
+              paintings[0].image.asset.metadata.dimensions.width) *
+              600,
+          )}
+          alt={paintings[0].title}
+        />
+      ) : (
+        <div class="image-placeholder"></div>
+      )}
     </a>
     <div>
       <a href="/paintings" class="styledLink">PAINTING</a>
@@ -79,19 +83,23 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY3);
   </div>
   <div class="type">
     <a href="/digital-collages" class="styledImage">
-      <Image
-        src={urlFor(collages[0].image.asset.url)
-          .width(600)
-          .format("webp")
-          .url()}
-        width={600}
-        height={Math.round(
-          (collages[0].image.asset.metadata.dimensions.height /
-            collages[0].image.asset.metadata.dimensions.width) *
-            600,
-        )}
-        alt={collages[0].title}
-      />
+      {collages?.[0]?.image ? (
+        <Image
+          src={urlFor(collages[0].image.asset.url)
+            .width(600)
+            .format("webp")
+            .url()}
+          width={600}
+          height={Math.round(
+            (collages[0].image.asset.metadata.dimensions.height /
+              collages[0].image.asset.metadata.dimensions.width) *
+              600,
+          )}
+          alt={collages[0].title}
+        />
+      ) : (
+        <div class="image-placeholder"></div>
+      )}
     </a>
     <div>
       <a href="/digital-collages" class="styledLink">DIGITAL COLLAGES</a>
@@ -99,19 +107,23 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY3);
   </div>
   <div class="type">
     <a href="/photography" class="styledImage">
-      <Image
-        src={urlFor(photography[0].image.asset.url)
-          .width(600)
-          .format("webp")
-          .url()}
-        width={600}
-        height={Math.round(
-          (photography[0].image.asset.metadata.dimensions.height /
-            photography[0].image.asset.metadata.dimensions.width) *
-            600,
-        )}
-        alt={photography[0].title}
-      />
+      {photography?.[0]?.image ? (
+        <Image
+          src={urlFor(photography[0].image.asset.url)
+            .width(600)
+            .format("webp")
+            .url()}
+          width={600}
+          height={Math.round(
+            (photography[0].image.asset.metadata.dimensions.height /
+              photography[0].image.asset.metadata.dimensions.width) *
+              600,
+          )}
+          alt={photography[0].title}
+        />
+      ) : (
+        <div class="image-placeholder"></div>
+      )}
     </a>
     <div>
       <a href="/photography" class="styledLink">PHOTOGRAPHY</a>
@@ -134,11 +146,16 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY3);
     width: 30%;
   }
 
-  .type img {
+  .type img,
+  .image-placeholder {
     width: 100%;
     height: auto;
     aspect-ratio: 1/1;
     object-fit: cover;
+  }
+
+  .image-placeholder {
+    background-color: var(--secondary-color);
   }
 
   .type > div {
