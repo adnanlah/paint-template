@@ -5,16 +5,20 @@ import LinkedinIcon from "./icons/LinkedinIcon.astro";
 import BehanceIcon from "./icons/BehanceIcon.astro";
 import InstagramIcon from "./icons/InstagramIcon.astro";
 
-const { instagram, facebook, linkedin, behance } = Astro.props;
+const { instagram, facebook, linkedin, behance, phone } = Astro.props;
 ---
 
 <div>
-    <a href={instagram} target="_blank" rel="noopener noreferrer">
+    {
+        instagram && <a href={instagram} target="_blank" rel="noopener noreferrer">
         <InstagramIcon />
     </a>
-    <a href={facebook} target="_blank" rel="noopener noreferrer">
+    }
+    {
+        facebook && <a href={facebook} target="_blank" rel="noopener noreferrer">
         <FacebookIcon />
     </a>
+    }
     {
         linkedin && (
             <a href={linkedin} target="_blank" rel="noopener noreferrer">
@@ -29,6 +33,14 @@ const { instagram, facebook, linkedin, behance } = Astro.props;
             </a>
         )
     }
+    {
+        phone && (
+            <a href={`tel:${phone}`} target="_blank" rel="noopener noreferrer">
+                <WhatsappIcon />
+            </a>
+        )
+    }
+    
 </div>
 
 <style>
