@@ -10,7 +10,7 @@ import Socials from "../../components/Socials.astro";
 
 const QUERY = `*[
   _type == "about"
-]|{_id, email, instagram, facebook, contactParagraph1, contactParagraph2, contactParagraph3, phone, behance, contactImage{
+]|{_id, email, instagram, facebook, linkedin, contactParagraph1, contactParagraph2, contactParagraph3, phone, behance, contactImage{
     asset->{
       _id,
       url,
