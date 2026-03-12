@@ -19,6 +19,14 @@ const QUERY = `*[
         dimensions
       }
     }
+  }, collections[]->{
+    name,
+    file{
+      asset->{
+        url,
+        originalFilename
+      }
+    }
   }}`;
 
 const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
@@ -45,21 +53,14 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
             <Body value={about[0].aboutText} />
 
             <div class="downloads">
-                Collections: <Download
-                    href="/El Bahi BELKHEIRI Artbook 2024.pdf"
-                    download="El Bahi BELKHEIRI Artbook 2024.pdf"
-                    text="Artbook"
-                />
-                <Download
-                    href="/El Bahi BELKHEIRI Memoire Eclatante.pdf"
-                    download="El Bahi BELKHEIRI Memoire Eclatante.pdf"
-                    text="Memoire Eclatante"
-                />
-                <Download
-                    href="/El Bahi BELKHEIRI Portfolio.pdf"
-                    download="El Bahi BELKHEIRI Portfolio.pdf"
-                    text="Portfolio"
-                />
+                Collections: 
+                {about[0].collections?.map((collection: any) => (
+                    <Download
+                        href={collection.file.asset.url}
+                        download={collection.file.asset.originalFilename}
+                        text={collection.name}
+                    />
+                ))}
             </div>
         </div>
     </section>

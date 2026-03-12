@@ -60,5 +60,11 @@ export const aboutType = defineType({
             type: 'array',
             of: [{ type: 'block' }],
         }),
+        defineField({
+            name: 'collections',
+            title: 'Collections',
+            type: 'array',
+            of: [{ type: 'reference', to: [{ type: 'collection' }] }],
+        }),
     ],
 })
