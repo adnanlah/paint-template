@@ -1,5 +1,5 @@
 import {defineField, defineType} from 'sanity'
-import {AutoSlugInput} from '../components/AutoSlugInput'
+// import {AutoSlugInput} from '../components/AutoSlugInput'
 
 export const photographyType = defineType({
   name: 'photography',
@@ -24,9 +24,9 @@ export const photographyType = defineType({
       name: 'slug',
       type: 'slug',
       // hidden: true,
-      components: {input: AutoSlugInput},
+      // components: {input: AutoSlugInput},
       options: {
-        source: 'title',
+        source: (doc) => `${doc.title}-${doc.year}`,
         maxLength: 96,
         slugify: (input: string) =>
           input
@@ -36,7 +36,7 @@ export const photographyType = defineType({
             .replace(/[^\w-]+/g, '')
             .replace(/--+/g, '-'),
       },
-      validation: (Rule) => Rule.required(),
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'publishedAt',
@@ -65,7 +65,7 @@ export const photographyType = defineType({
       title: 'Theme',
       type: 'reference',
       to: [{type: 'photographyTheme'}],
-      validation: (Rule) => Rule.required(),
+      validation: (rule) => rule.required(),
     }),
   ],
 })

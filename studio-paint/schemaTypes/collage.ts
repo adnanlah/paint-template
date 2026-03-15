@@ -1,5 +1,5 @@
 import {defineField, defineType} from 'sanity'
-import {AutoSlugInput} from '../components/AutoSlugInput'
+// import {AutoSlugInput} from '../components/AutoSlugInput'
 
 export const collageType = defineType({
   name: 'collage',
@@ -30,9 +30,9 @@ export const collageType = defineType({
       name: 'slug',
       type: 'slug',
       // hidden: true,
-      components: {input: AutoSlugInput},
+      // components: {input: AutoSlugInput},
       options: {
-        source: 'title',
+        source: (doc) => `${doc.title}-${doc.year}`,
         maxLength: 96,
         slugify: (input: string) =>
           input
@@ -42,7 +42,7 @@ export const collageType = defineType({
             .replace(/[^\w-]+/g, '')
             .replace(/--+/g, '-'),
       },
-      validation: (Rule) => Rule.required(),
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'publishedAt',
@@ -65,7 +65,7 @@ export const collageType = defineType({
       title: 'Theme',
       type: 'reference',
       to: [{type: 'collageTheme'}],
-      validation: (Rule) => Rule.required(),
+      validation: (rule) => rule.required(),
     }),
   ],
 })
