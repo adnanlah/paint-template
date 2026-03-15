@@ -28,10 +28,11 @@ if (!slug) {
 const QUERY = `*[
   _type == "collage"
   && theme->slug.current == $slug
-]|order(year desc){
+]|order(order asc){
   _id, 
   title, 
   slug, 
+  order,
   year, 
   body,
   theme->{

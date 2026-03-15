@@ -12,6 +12,10 @@ export const photographyType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'order',
+      type: 'number',
+    }),
+    defineField({
       name: 'year',
       type: 'number',
       validation: (rule) => rule.required(),
