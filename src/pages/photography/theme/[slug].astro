@@ -1,25 +1,30 @@
 ---
-import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import Base from "../../../layouts/Base.astro";
 
 import Breadcrumbs from "../../../components/Breadcrumbs.astro";
 import ThemeImage from "../../../components/ThemeImage.astro";
 import Body from "../../../components/Body.astro";
+import {
+    decodeSlug,
+    encodeSlug,
+    type ArtworkListDocument,
+    type SlugParam,
+} from "../../../scripts/helpers";
 
 export async function getStaticPaths() {
-    const slugs = await sanityClient.fetch(`
+    const slugs = await sanityClient.fetch<SlugParam[]>(`
     *[_type == "photographyTheme" && defined(slug.current)]{
       "slug": slug.current
     }
   `);
 
-    return slugs.map((s: { slug: any }) => ({
-        params: { slug: s.slug },
+    return slugs.map((s) => ({
+        params: { slug: encodeSlug(s.slug) },
     }));
 }
 
-const { slug } = Astro.params;
+const slug = Astro.params.slug ? decodeSlug(Astro.params.slug) : undefined;
 
 if (!slug) {
     throw new Error("Missing slug param");
@@ -42,7 +47,7 @@ const QUERY = `*[
   image{asset->{_id, url, metadata{dimensions}}}}
 `;
 
-const photography = await sanityClient.fetch<SanityDocument[]>(QUERY, {
+const photography = await sanityClient.fetch<ArtworkListDocument[]>(QUERY, {
     slug,
 });
 
@@ -62,17 +67,19 @@ if (!photography || photography.length === 0) {
         />
         <div class="container">
             {
-                photography.map((photography) => (
+                photography.map((photography, index) => (
                     <ThemeImage
                         title={photography.title}
-                        imageUrl={photography.image.asset.url}
-                        url={`/photography/theme/${slug}/${photography.slug.current}`}
+                        image={photography.image}
+                        url={`/photography/theme/${encodeSlug(slug)}/${encodeSlug(photography.slug.current)}`}
                         width={
                             photography.image.asset.metadata.dimensions.width
                         }
                         height={
                             photography.image.asset.metadata.dimensions.height
                         }
+                        loading={index === 0 ? "eager" : "lazy"}
+                        fetchpriority={index === 0 ? "high" : "auto"}
                     >
                         <div>
                             <b>Year:</b> {photography.year}

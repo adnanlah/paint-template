@@ -1,22 +1,23 @@
 ---
-import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import InstagramIcon from "./icons/InstagramIcon.astro";
+import type { InstagramDocument } from "../scripts/helpers";
 
 const QUERY = `*[
   _type == "about"
 ]|{instagram}`;
 
-const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
+const about = await sanityClient.fetch<InstagramDocument[]>(QUERY);
 
 const rawPath = Astro.url.pathname;
 const currentPath =
     rawPath.endsWith("/") && rawPath !== "/" ? rawPath.slice(0, -1) : rawPath;
+const instagramUrl = about[0]?.instagram;
 ---
 
-<div class:list={["container", "wrapper"]}>
-    <a href="/" class={"logoContainer"} aria-label="Home"></a>
-    <div class={"nav"}>
+<header class:list={["container", "wrapper"]}>
+    <a href="/" class="logoContainer" aria-label="Home"></a>
+    <div class="nav">
         <a
             href="/"
             class:list={[
@@ -40,21 +41,24 @@ const currentPath =
             class:list={["styledLink", { active: currentPath === "/contact" }]}
             >CONTACT</a
         >
-        <a
-            href={about[0].instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            class:list={["styledLink", "icon"]}
-        >
-            <InstagramIcon />
-        </a>
+        {
+            instagramUrl && (
+                <a
+                    href={instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    class:list={["styledLink", "icon"]}
+                >
+                    <InstagramIcon />
+                </a>
+            )
+        }
     </div>
-</div>
+</header>
 
 <style>
     .container {
-        /* border: 1px solid red; */
         font-size: 1rem;
         margin: 5rem 0 2.5rem;
         font-weight: 500;
@@ -122,6 +126,10 @@ const currentPath =
     }
 
     @media screen and (max-width: 768px) {
+        .container {
+            margin-top: 3rem;
+        }
+
         .nav {
             gap: 1rem;
         }

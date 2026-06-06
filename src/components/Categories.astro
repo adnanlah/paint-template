@@ -1,8 +1,7 @@
 ---
-import { Image } from "astro:assets";
 import { sanityClient } from "sanity:client";
-import type { SanityDocument } from "@sanity/client";
-import { urlFor } from "../scripts/helpers";
+import ResponsiveSanityImage from "./ResponsiveSanityImage.astro";
+import type { HighlightedArtworkDocument } from "../scripts/helpers";
 
 const QUERY1 = `*[
   _type == "painting"
@@ -19,7 +18,9 @@ const QUERY1 = `*[
     hotspot
   }}`;
 
-const paintings = await sanityClient.fetch<SanityDocument[]>(QUERY1);
+const paintings = await sanityClient.fetch<HighlightedArtworkDocument[]>(
+  QUERY1,
+);
 
 const QUERY2 = `*[
   _type == "collage"
@@ -36,7 +37,9 @@ const QUERY2 = `*[
     hotspot
   }}`;
 
-const collages = await sanityClient.fetch<SanityDocument[]>(QUERY2);
+const collages = await sanityClient.fetch<HighlightedArtworkDocument[]>(
+  QUERY2,
+);
 
 const QUERY3 = `*[
   _type == "photography"
@@ -53,25 +56,25 @@ const QUERY3 = `*[
     hotspot
   }}`;
 
-const photography = await sanityClient.fetch<SanityDocument[]>(QUERY3);
+const photography = await sanityClient.fetch<HighlightedArtworkDocument[]>(
+  QUERY3,
+);
 ---
 
 <section class={"container"}>
   <div class="type">
     <a href="/paintings" class="styledImage">
       {paintings?.[0]?.image ? (
-        <Image
-          src={urlFor(paintings[0].image.asset.url)
-            .width(600)
-            .format("webp")
-            .url()}
-          width={600}
-          height={Math.round(
-            (paintings[0].image.asset.metadata.dimensions.height /
-              paintings[0].image.asset.metadata.dimensions.width) *
-              600,
-          )}
+        <ResponsiveSanityImage
+          source={paintings[0].image}
           alt={paintings[0].title}
+          sourceWidth={paintings[0].image.asset.metadata.dimensions.width}
+          sourceHeight={paintings[0].image.asset.metadata.dimensions.height}
+          widths={[320, 480, 640, 800]}
+          sizes="(max-width: 768px) calc(100vw - 5rem), 30vw"
+          cropSquare
+          loading="eager"
+          fetchpriority="high"
         />
       ) : (
         <div class="image-placeholder"></div>
@@ -84,18 +87,14 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY3);
   <div class="type">
     <a href="/digital-collages" class="styledImage">
       {collages?.[0]?.image ? (
-        <Image
-          src={urlFor(collages[0].image.asset.url)
-            .width(600)
-            .format("webp")
-            .url()}
-          width={600}
-          height={Math.round(
-            (collages[0].image.asset.metadata.dimensions.height /
-              collages[0].image.asset.metadata.dimensions.width) *
-              600,
-          )}
+        <ResponsiveSanityImage
+          source={collages[0].image}
           alt={collages[0].title}
+          sourceWidth={collages[0].image.asset.metadata.dimensions.width}
+          sourceHeight={collages[0].image.asset.metadata.dimensions.height}
+          widths={[320, 480, 640, 800]}
+          sizes="(max-width: 768px) calc(100vw - 5rem), 30vw"
+          cropSquare
         />
       ) : (
         <div class="image-placeholder"></div>
@@ -108,18 +107,14 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY3);
   <div class="type">
     <a href="/photography" class="styledImage">
       {photography?.[0]?.image ? (
-        <Image
-          src={urlFor(photography[0].image.asset.url)
-            .width(600)
-            .format("webp")
-            .url()}
-          width={600}
-          height={Math.round(
-            (photography[0].image.asset.metadata.dimensions.height /
-              photography[0].image.asset.metadata.dimensions.width) *
-              600,
-          )}
+        <ResponsiveSanityImage
+          source={photography[0].image}
           alt={photography[0].title}
+          sourceWidth={photography[0].image.asset.metadata.dimensions.width}
+          sourceHeight={photography[0].image.asset.metadata.dimensions.height}
+          widths={[320, 480, 640, 800]}
+          sizes="(max-width: 768px) calc(100vw - 5rem), 30vw"
+          cropSquare
         />
       ) : (
         <div class="image-placeholder"></div>
@@ -136,9 +131,6 @@ const photography = await sanityClient.fetch<SanityDocument[]>(QUERY3);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* border: 1px solid blue; */
-    /* height: 100%; */
-    /* padding: 0 7.5rem; */
   }
 
   .type {

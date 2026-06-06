@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { set, useFormValue, ObjectInputProps, SlugValue, SlugSchemaType } from 'sanity'
+import { set, useFormValue } from 'sanity'
+import type { ObjectInputProps, SlugSchemaType, SlugValue } from 'sanity'
 import { SlugInput } from 'sanity'
 
 function slugify(input: string): string {

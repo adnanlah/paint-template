@@ -1,5 +1,4 @@
 ---
-import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import MainButton from "../../../../components/MainButton.astro";
 import InquireModal from "../../../../components/InquireModal.astro";
@@ -8,9 +7,15 @@ import Base from "../../../../layouts/Base.astro";
 import PaintingDetails from "../../../../components/PaintingDetails.astro";
 import Body from "../../../../components/Body.astro";
 import Artwork from "../../../../components/Artwork.astro";
+import {
+  decodeSlug,
+  encodeSlug,
+  type NestedSlugParam,
+  type PaintingDetailDocument,
+} from "../../../../scripts/helpers";
 
 export async function getStaticPaths() {
-  const slugs = await sanityClient.fetch(`
+  const slugs = await sanityClient.fetch<NestedSlugParam[]>(`
     *[_type == "painting" && defined(slug.current)]{
       "slug": slug.current,
       "themeslug": theme->slug.current
@@ -18,16 +23,21 @@ export async function getStaticPaths() {
   `);
 
   return slugs
-    .filter((s: { slug: any; themeslug: any }) => s.slug && s.themeslug)
-    .map((s: { slug: any; themeslug: any }) => ({
+    .filter((s) => s.slug && s.themeslug)
+    .map((s) => ({
       params: {
-        paintingslug: s.slug,
-        themeslug: s.themeslug,
+        paintingslug: encodeSlug(s.slug),
+        themeslug: encodeSlug(s.themeslug),
       },
     }));
 }
 
-const { paintingslug, themeslug } = Astro.params;
+const paintingslug = Astro.params.paintingslug
+  ? decodeSlug(Astro.params.paintingslug)
+  : undefined;
+const themeslug = Astro.params.themeslug
+  ? decodeSlug(Astro.params.themeslug)
+  : undefined;
 
 if (!paintingslug || !themeslug) {
   throw new Error("Missing slugs params");
@@ -63,7 +73,7 @@ const QUERY = `*[
   }
 }`;
 
-const painting = await sanityClient.fetch<SanityDocument>(QUERY, {
+const painting = await sanityClient.fetch<PaintingDetailDocument>(QUERY, {
   paintingslug,
 });
 
@@ -80,7 +90,7 @@ if (!painting) {
       { label: "PAINTINGS", href: "/paintings" },
       {
         label: painting.theme.title,
-        href: `/paintings/theme/${painting.theme.slug.current}`,
+        href: `/paintings/theme/${encodeSlug(painting.theme.slug.current)}`,
       },
     ]}
     current={painting.title}
@@ -88,7 +98,7 @@ if (!painting) {
   <div class="container">
     <Artwork
       title={painting.title}
-      imageUrl={painting.image.asset.url}
+      image={painting.image}
       width={painting.image.asset.metadata.dimensions.width}
       height={painting.image.asset.metadata.dimensions.height}
     >
@@ -100,7 +110,7 @@ if (!painting) {
           medium: painting.medium,
         }}
       />
-      <Body value={painting.body} />
+      {painting.body && <Body value={painting.body} />}
 
       {
         !painting.available && (

@@ -5,7 +5,9 @@
     "**/*"
   ],
   "exclude": [
-    "dist"
+    "dist",
+    "node_modules",
+    "studio-paint/dist"
   ],
   "compilerOptions": {
     "jsx": "react-jsx",

@@ -1,12 +1,11 @@
 ---
-import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import Base from "../../layouts/Base.astro";
-import { Image } from "astro:assets";
-import { urlFor } from "../../scripts/helpers";
 import ContactForm from "../../components/ContactForm.astro";
 import Title from "../../components/Title.astro";
 import Socials from "../../components/Socials.astro";
+import ResponsiveSanityImage from "../../components/ResponsiveSanityImage.astro";
+import type { ContactDocument } from "../../scripts/helpers";
 
 const QUERY = `*[
   _type == "about"
@@ -20,42 +19,40 @@ const QUERY = `*[
     }
   }}`;
 
-const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
+const about = await sanityClient.fetch<ContactDocument[]>(QUERY);
+const contact = about[0];
+const [emailName, emailDomain] = contact.email.split("@");
 ---
 
-<Base title="Contact">
+<Base title="Contact" mainClass="compact-page">
     <Title content="CONTACT ME" />
     <section class="container">
-        <Image
-            src={urlFor(about[0].contactImage.asset.url)
-                .width(1200)
-                .format("webp")
-                .url()}
-            width={1200}
-            height={Math.round(
-                (about[0].contactImage.asset.metadata.dimensions.height /
-                    about[0].contactImage.asset.metadata.dimensions.width) *
-                    1200,
-            )}
-            alt="Contact me image"
-            class="image"
-        />
-        <div class="body">
-            <p>{about[0]?.contactParagraph1}</p>
-            <a href={`mailto:${about[0].email}`}>
-                {about[0].email.split("@")[0]}<b
-                    >@{about[0].email.split("@")[1]}</b
-                >
-            </a>
-            <p>{about[0]?.contactParagraph2}</p>
-            <Socials
-                instagram={about[0]?.instagram}
-                facebook={about[0]?.facebook}
-                linkedin={about[0]?.linkedin}
-                behance={about[0]?.behance}
-                phone={about[0]?.phone}
+        <div class="image-frame">
+            <ResponsiveSanityImage
+                source={contact.contactImage}
+                alt="Contact me image"
+                sourceWidth={contact.contactImage.asset.metadata.dimensions.width}
+                sourceHeight={contact.contactImage.asset.metadata.dimensions.height}
+                widths={[320, 480, 640, 800, 960, 1200]}
+                sizes="(max-width: 1000px) calc(100vw - 5rem), 50vw"
+                loading="eager"
+                fetchpriority="high"
             />
-            <p>{about[0]?.contactParagraph3}</p>
+        </div>
+        <div class="body">
+            <p>{contact.contactParagraph1}</p>
+            <a href={`mailto:${contact.email}`}>
+                {emailName}<b>@{emailDomain}</b>
+            </a>
+            <p>{contact.contactParagraph2}</p>
+            <Socials
+                instagram={contact.instagram}
+                facebook={contact.facebook}
+                linkedin={contact.linkedin}
+                behance={contact.behance}
+                phone={contact.phone}
+            />
+            <p>{contact.contactParagraph3}</p>
             <ContactForm />
         </div>
     </section>
@@ -64,16 +61,25 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
 <style>
     .container {
         width: 100%;
+        flex: 1;
+        min-height: 0;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: 2.5rem;
         align-items: start;
         margin-top: 2.5rem;
     }
 
-    .image {
+    .image-frame {
         width: 100%;
-        height: auto;
+        min-width: 0;
+        max-height: 100%;
+    }
+
+    .image-frame :global(img) {
+        max-height: 100%;
+        object-fit: contain;
+        object-position: left top;
     }
 
     .body {
@@ -87,6 +93,10 @@ const about = await sanityClient.fetch<SanityDocument[]>(QUERY);
         .container {
             grid-template-columns: 1fr;
             gap: 1rem;
+        }
+
+        .image-frame {
+            max-height: none;
         }
     }
 </style>

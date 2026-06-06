@@ -1,26 +1,30 @@
 ---
-import { Image } from "astro:assets";
-import { urlFor } from "../scripts/helpers";
+import ResponsiveSanityImage from "./ResponsiveSanityImage.astro";
+import type { SanityImageWithMetadata } from "../scripts/helpers";
 
 interface Props {
     title: string;
-    imageUrl: string;
+    image: SanityImageWithMetadata;
     width: number;
     height: number;
 }
 
-const { title, imageUrl, width, height } = Astro.props;
+const { title, image, width, height } = Astro.props;
 ---
 
 <div class="artwork">
     <div class="image-container">
-        <Image
-            src={urlFor(imageUrl).width(800).format("webp").url()}
+        <ResponsiveSanityImage
+            source={image}
             alt={title}
-            width={800}
-            height={Math.round((height / width) * 800)}
+            sourceWidth={width}
+            sourceHeight={height}
+            widths={[320, 480, 640, 800, 1000]}
+            sizes="(max-width: 480px) calc(100vw - 5rem), 40vw"
+            loading="eager"
+            fetchpriority="high"
+            highResWidth={2400}
             class="image"
-            data-highres={urlFor(imageUrl).width(2400).format("webp").url()}
         />
     </div>
 
@@ -105,7 +109,11 @@ const { title, imageUrl, width, height } = Astro.props;
     ) as HTMLDivElement | null;
     const image = document.querySelector(".image") as HTMLImageElement | null;
 
-    if (imageContainer && image) {
+    const canUseFinePointer = window.matchMedia(
+        "(hover: hover) and (pointer: fine)",
+    ).matches;
+
+    if (imageContainer && image && canUseFinePointer) {
         let highResLoaded = false;
 
         imageContainer.addEventListener("mouseenter", () => {

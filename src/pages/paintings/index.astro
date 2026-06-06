@@ -1,30 +1,43 @@
 ---
-import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import Base from "../../layouts/Base.astro";
-import { urlFor } from "../../scripts/helpers";
 import Breadcrumbs from "../../components/Breadcrumbs.astro";
 import PageNote from "../../components/PageNote.astro";
 import Themes from "../../components/Themes.astro";
+import { encodeSlug } from "../../scripts/helpers";
+import type {
+    SanityImageWithMetadata,
+    ThemeCard,
+} from "../../scripts/helpers";
+
+interface ThemeDocument {
+    title: string;
+    slug: { current: string };
+    image: SanityImageWithMetadata;
+}
+
+interface AboutMessageDocument {
+    paintingMessage?: string;
+}
 
 const QUERY = `*[
   _type == "paintingTheme"
   && defined(slug.current)
-]|order(year desc){_id, title, slug, image{asset->{_id, url, metadata{dimensions}}}}`;
+]|order(year desc){_id, title, slug, image{asset->{_id, url, metadata{dimensions}}, crop, hotspot}}`;
 
 const ABOUT_QUERY = `*[
   _type == "about"
 ]|{paintingMessage}`;
 
-const paintingThemes = await sanityClient.fetch<SanityDocument[]>(QUERY);
-const about = await sanityClient.fetch<SanityDocument[]>(ABOUT_QUERY);
+const paintingThemes = await sanityClient.fetch<ThemeDocument[]>(QUERY);
+const about = await sanityClient.fetch<AboutMessageDocument[]>(ABOUT_QUERY);
 
-const themes = paintingThemes.map((theme) => {
+const themes: ThemeCard[] = paintingThemes.map((theme) => {
     return {
         title: theme.title,
-        url: `/paintings/theme/${theme.slug.current}`,
+        url: `/paintings/theme/${encodeSlug(theme.slug.current)}`,
         image: {
-            url: urlFor(theme.image.asset.url).width(1000).format("webp").url(),
+            source: theme.image,
             height: theme.image.asset.metadata.dimensions.height,
             width: theme.image.asset.metadata.dimensions.width,
         },

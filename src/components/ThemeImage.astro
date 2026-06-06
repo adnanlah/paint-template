@@ -1,25 +1,31 @@
 ---
-import { Image } from "astro:assets";
-import { urlFor } from "../scripts/helpers";
+import ResponsiveSanityImage from "./ResponsiveSanityImage.astro";
+import type { SanityImageWithMetadata } from "../scripts/helpers";
 
 interface Props {
     title: string;
     url: string;
-    imageUrl: string;
+    image: SanityImageWithMetadata;
     width: number;
     height: number;
+    loading?: "eager" | "lazy";
+    fetchpriority?: "auto" | "high" | "low";
 }
 
-const { title, url, imageUrl, width, height } = Astro.props;
+const { title, url, image, width, height, loading, fetchpriority } = Astro.props;
 ---
 
 <div class={"artwork"}>
     <a href={url} class="styledImage">
-        <Image
-            src={urlFor(imageUrl).width(1000).format("webp").url()}
+        <ResponsiveSanityImage
+            source={image}
             alt={title}
-            width={1000}
-            height={Math.round((height / width) * 1000)}
+            sourceWidth={width}
+            sourceHeight={height}
+            widths={[240, 360, 480, 640, 800, 1000]}
+            sizes="(max-width: 768px) 40vw, 30vw"
+            loading={loading}
+            fetchpriority={fetchpriority}
             class="image"
         />
     </a>

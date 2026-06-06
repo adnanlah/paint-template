@@ -6,6 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check": "astro check",
+    "typecheck": "astro check",
+    "validate": "astro check && astro build",
     "astro": "astro"
   },
   "dependencies": {
@@ -20,6 +23,7 @@
     "styled-components": "^6.3.11"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.6",
     "typescript": "^5.9.3"
   }
 }

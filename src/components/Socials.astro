@@ -5,6 +5,14 @@ import LinkedinIcon from "./icons/LinkedinIcon.astro";
 import BehanceIcon from "./icons/BehanceIcon.astro";
 import InstagramIcon from "./icons/InstagramIcon.astro";
 
+interface Props {
+    instagram?: string;
+    facebook?: string;
+    linkedin?: string;
+    behance?: string;
+    phone?: string;
+}
+
 const { instagram, facebook, linkedin, behance, phone } = Astro.props;
 ---
 

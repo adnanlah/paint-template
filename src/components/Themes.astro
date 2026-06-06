@@ -1,34 +1,30 @@
 ---
-import { Image } from "astro:assets";
+import ResponsiveSanityImage from "./ResponsiveSanityImage.astro";
+import type { ThemeCard } from "../scripts/helpers";
 
 const { themes } = Astro.props as {
-    themes: {
-        title: string;
-        url: string;
-        image: {
-            url: string;
-            height: number;
-            width: number;
-        };
-    }[];
+    themes: ThemeCard[];
 };
 ---
 
 <div class={"container"}>
     {
-        themes.map((theme) => (
+        themes.map((theme, index) => (
             <div class:list={["theme"]}>
                 <a
                     href={theme.url}
                     class:list={["image-container", "styledImage"]}
                 >
-                    <Image
-                        src={theme.image.url}
+                    <ResponsiveSanityImage
+                        source={theme.image.source}
                         alt={theme.title}
-                        width={1000}
-                        height={Math.round(
-                            (theme.image.height / theme.image.width) * 1000,
-                        )}
+                        sourceWidth={theme.image.width}
+                        sourceHeight={theme.image.height}
+                        widths={[240, 360, 480, 640, 800, 1000]}
+                        sizes="(max-width: 768px) calc((100vw - 7.5rem) / 2), 25vw"
+                        cropSquare
+                        loading={index === 0 ? "eager" : "lazy"}
+                        fetchpriority={index === 0 ? "high" : "auto"}
                     />
                 </a>
 

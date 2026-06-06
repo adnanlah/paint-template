@@ -1,13 +1,18 @@
 ---
-import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import Breadcrumbs from "../../../../components/Breadcrumbs.astro";
 import Base from "../../../../layouts/Base.astro";
 import Body from "../../../../components/Body.astro";
 import Artwork from "../../../../components/Artwork.astro";
+import {
+  decodeSlug,
+  encodeSlug,
+  type ArtworkDetailDocument,
+  type NestedSlugParam,
+} from "../../../../scripts/helpers";
 
 export async function getStaticPaths() {
-  const slugs = await sanityClient.fetch(`
+  const slugs = await sanityClient.fetch<NestedSlugParam[]>(`
     *[_type == "collage" && defined(slug.current)]{
       "slug": slug.current,
       "themeslug": theme->slug.current
@@ -15,16 +20,21 @@ export async function getStaticPaths() {
   `);
 
   return slugs
-    .filter((s: { slug: any; themeslug: any }) => s.slug && s.themeslug)
-    .map((s: { slug: any; themeslug: any }) => ({
+    .filter((s) => s.slug && s.themeslug)
+    .map((s) => ({
       params: {
-        collageslug: s.slug,
-        themeslug: s.themeslug,
+        collageslug: encodeSlug(s.slug),
+        themeslug: encodeSlug(s.themeslug),
       },
     }));
 }
 
-const { collageslug, themeslug } = Astro.params;
+const collageslug = Astro.params.collageslug
+  ? decodeSlug(Astro.params.collageslug)
+  : undefined;
+const themeslug = Astro.params.themeslug
+  ? decodeSlug(Astro.params.themeslug)
+  : undefined;
 
 if (!collageslug || !themeslug) {
   throw new Error("Missing slugs params");
@@ -54,7 +64,7 @@ const QUERY = `*[
   }
 }`;
 
-const collage = await sanityClient.fetch<SanityDocument>(QUERY, {
+const collage = await sanityClient.fetch<ArtworkDetailDocument>(QUERY, {
   collageslug,
 });
 
@@ -70,7 +80,7 @@ if (!collage) {
       { label: "DIGITAL COLLAGES", href: "/digital-collages" },
       {
         label: collage.theme.title,
-        href: `/digital-collages/theme/${collage.theme.slug.current}`,
+        href: `/digital-collages/theme/${encodeSlug(collage.theme.slug.current)}`,
       },
     ]}
     current={collage.title}
@@ -78,7 +88,7 @@ if (!collage) {
   <div class="container">
     <Artwork
       title={collage.title}
-      imageUrl={collage.image.asset.url}
+      image={collage.image}
       width={collage.image.asset.metadata.dimensions.width}
       height={collage.image.asset.metadata.dimensions.height}
     >

@@ -1,0 +1,69 @@
+---
+import { getResponsiveSanityImage } from "../scripts/helpers";
+import type { SanityImageSource } from "@sanity/image-url";
+
+interface Props {
+    source: SanityImageSource;
+    alt: string;
+    sourceWidth: number;
+    sourceHeight: number;
+    widths: number[];
+    sizes: string;
+    quality?: number;
+    cropSquare?: boolean;
+    loading?: "eager" | "lazy";
+    fetchpriority?: "auto" | "high" | "low";
+    highResWidth?: number;
+    class?: string;
+}
+
+const {
+    source,
+    alt,
+    sourceWidth,
+    sourceHeight,
+    widths,
+    sizes,
+    quality,
+    cropSquare,
+    loading,
+    fetchpriority,
+    highResWidth,
+} = Astro.props;
+
+const className = Astro.props.class;
+const image = getResponsiveSanityImage({
+    source,
+    sourceWidth,
+    sourceHeight,
+    widths,
+    sizes,
+    quality,
+    cropSquare,
+    loading,
+    fetchpriority,
+    highResWidth,
+});
+---
+
+<img
+    src={image.src}
+    srcset={image.srcset}
+    sizes={image.sizes}
+    alt={alt}
+    width={image.width}
+    height={image.height}
+    loading={image.loading}
+    decoding={image.decoding}
+    fetchpriority={image.fetchpriority}
+    class={className}
+    data-highres={image.highResUrl}
+/>
+
+<style>
+    img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+</style>

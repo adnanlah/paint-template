@@ -1,13 +1,18 @@
 ---
-import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import Breadcrumbs from "../../../../components/Breadcrumbs.astro";
 import Base from "../../../../layouts/Base.astro";
 import Body from "../../../../components/Body.astro";
 import Artwork from "../../../../components/Artwork.astro";
+import {
+  decodeSlug,
+  encodeSlug,
+  type ArtworkDetailDocument,
+  type NestedSlugParam,
+} from "../../../../scripts/helpers";
 
 export async function getStaticPaths() {
-  const slugs = await sanityClient.fetch(`
+  const slugs = await sanityClient.fetch<NestedSlugParam[]>(`
     *[_type == "photography" && defined(slug.current)]{
       "slug": slug.current,
       "themeslug": theme->slug.current
@@ -15,16 +20,21 @@ export async function getStaticPaths() {
   `);
 
   return slugs
-    .filter((s: { slug: any; themeslug: any }) => s.slug && s.themeslug)
-    .map((s: { slug: any; themeslug: any }) => ({
+    .filter((s) => s.slug && s.themeslug)
+    .map((s) => ({
       params: {
-        photographyslug: s.slug,
-        themeslug: s.themeslug,
+        photographyslug: encodeSlug(s.slug),
+        themeslug: encodeSlug(s.themeslug),
       },
     }));
 }
 
-const { photographyslug, themeslug } = Astro.params;
+const photographyslug = Astro.params.photographyslug
+  ? decodeSlug(Astro.params.photographyslug)
+  : undefined;
+const themeslug = Astro.params.themeslug
+  ? decodeSlug(Astro.params.themeslug)
+  : undefined;
 
 if (!photographyslug || !themeslug) {
   throw new Error("Missing slugs params");
@@ -54,7 +64,7 @@ const QUERY = `*[
   }
 }`;
 
-const photography = await sanityClient.fetch<SanityDocument>(QUERY, {
+const photography = await sanityClient.fetch<ArtworkDetailDocument>(QUERY, {
   photographyslug,
 });
 
@@ -70,7 +80,7 @@ if (!photography) {
       { label: "PHOTOGRAPHY", href: "/photography" },
       {
         label: photography.theme.title,
-        href: `/photography/theme/${photography.theme.slug.current}`,
+        href: `/photography/theme/${encodeSlug(photography.theme.slug.current)}`,
       },
     ]}
     current={photography.title}
@@ -78,7 +88,7 @@ if (!photography) {
   <div class="container">
     <Artwork
       title={photography.title}
-      imageUrl={photography.image.asset.url}
+      image={photography.image}
       width={photography.image.asset.metadata.dimensions.width}
       height={photography.image.asset.metadata.dimensions.height}
     >
