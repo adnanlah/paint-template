@@ -1,4 +1,8 @@
-# Astro Starter Kit: Basics
+# El Bahi Belkheiri — Artist Portfolio
+
+This repository contains the source code for a small portfolio website created for artist El Bahi Belkheiri. The live website can be viewed at [elbahibelkheiri.com](https://www.elbahibelkheiri.com/). It is built with Astro and TypeScript, uses Sanity as its content management system, and includes React integration for interactive components. The website is designed to be blazing fast because quick loading is especially important for an image-rich portfolio, keeping browsing smooth and letting visitors focus on the artwork.
+
+## Project Setup
 
 ```sh
 npm create astro@latest -- --template basics
